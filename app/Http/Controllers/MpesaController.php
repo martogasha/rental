@@ -50,7 +50,7 @@ class MpesaController extends Controller
         global $response;
         $webhooks = $K2->Webhooks();
 
-        $json_str = file_get_contents('https://www.iconztech.com/api/storeWebhooks');
+        $json_str = file_get_contents('https://rental.iconztech.com/api/storeWebhooks');
         $response = $webhooks->webhookHandler($json_str, $_SERVER['a419432d-284a-4688-9535-bcf7314c3639']);
         dd($response);
     }

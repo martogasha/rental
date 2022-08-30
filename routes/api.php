@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MpesaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+//mpesa routes
+Route::get('authenticate', [MpesaController::class, 'authenticate']);
+Route::get('subscribe', [MpesaController::class, 'subscribe']);
+Route::get('stkPush', [MpesaController::class, 'stkPush']);
+Route::post('storeWebhooks', [MpesaController::class, 'storeWebhooks']);
