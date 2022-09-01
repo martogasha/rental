@@ -58,7 +58,7 @@ class MpesaController extends Controller
             'ref'=>$input['event']['resource']['reference'],
             'name'=>($firstName .''. $firstMiddle .''. $firstLast),
             'amount'=>$input['event']['resource']['amount'],
-            'payment_method'=>$input['event']['resource']['system'],
+            'payment_method'=>'Mpesa',
             'bank_type'=>'Mpesa',
             'date'=>Carbon::now()->format('d/m/Y'),
         ]);
@@ -94,7 +94,7 @@ class MpesaController extends Controller
         dd($response);
     }
     public function mpesaTransaction(){
-        $transactions = Transaction::where('payment_method','LIPA NA MPESA')->get();
+        $transactions = Transaction::where('payment_method','Mpesa')->get();
         return view('mpesa',[
             'transactions'=>$transactions
         ]);
