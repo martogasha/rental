@@ -873,20 +873,22 @@
                                     <tr>
                                         <th>Ref No</th>
                                         <th>Name</th>
-                                        <th>Phone</th>
                                         <th>Amount</th>
+                                        <th>Bank</th>
                                         <th>Date</th>
 
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td>KSADFASDLFKD</td>
-                                        <td>Maxmillan Kibe</td>
-                                        <td>0726155494</td>
-                                        <td>Ksh 10,100</td>
-                                        <td>12/03/2022</td>
-                                    </tr>
+                                    @foreach($transactions as $transaction)
+                                        <tr>
+                                            <td>{{$transaction->ref}}</td>
+                                            <td>{{$transaction->name}}</td>
+                                            <td>{{$transaction->amount}}</td>
+                                            <td>{{$transaction->bank_type}}</td>
+                                            <td>{{$transaction->date}}</td>
+                                        </tr>
+                                    @endforeach
                                 </table>
                             </div>
                         </div>

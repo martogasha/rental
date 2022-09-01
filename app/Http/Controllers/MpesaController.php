@@ -56,13 +56,15 @@ class MpesaController extends Controller
         $firstLast = $input['event']['resource']['sender_last_name'];
         $tranaction = Transaction::create([
             'ref'=>$input['event']['resource']['reference'],
-            'name'=>($firstName . $firstMiddle . $firstLast),
+            'name'=>($firstName .''. $firstMiddle .''. $firstLast),
             'amount'=>$input['event']['resource']['amount'],
             'payment_method'=>$input['event']['resource']['system'],
             'bank_type'=>'Mpesa',
             'date'=>Carbon::now()->format('d/m/Y'),
         ]);
-        $getInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->first();
+        $getUser = Customer::where('phone',$input['event']['resource']['sender_phone_number'])->first();
+        $getLease = Lease::where('customer_id',$getUser->id)->first();
+        $getInvoice = \App\Models\Invoice::where('lease_id',$getLease->id)->where('status','0')->first();
         $payment = Payment::create([
             'transaction_id'=> $tranaction->id,
             'invoice_id'=> $getInvoice->id,
