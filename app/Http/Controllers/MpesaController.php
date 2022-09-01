@@ -51,14 +51,14 @@ class MpesaController extends Controller
     }
     public function storeWebhooks(Request $request){
         $input = $request->json()->all();
-        $firstName = $input[0]['event']['resource']['sender_first_name'];
-        $firstMiddle = $input[0]['event']['resource']['sender_middle_name'];
-        $firstLast = $input[0]['event']['resource']['sender_last_name'];
+        $firstName = $input['event']['resource']['sender_first_name'];
+        $firstMiddle = $input['event']['resource']['sender_middle_name'];
+        $firstLast = $input['event']['resource']['sender_last_name'];
         $tranaction = Transaction::create([
-            'ref'=>$input[0]['event']['resource']['reference'],
+            'ref'=>$input['event']['resource']['reference'],
             'name'=>($firstName . $firstMiddle . $firstLast),
-            'amount'=>$input[0]['event']['resource']['amount'],
-            'payment_method'=>$input[0]['event']['resource']['system'],
+            'amount'=>$input['event']['resource']['amount'],
+            'payment_method'=>$input['event']['resource']['system'],
             'bank_type'=>'Mpesa',
             'date'=>Carbon::now()->format('d/m/Y'),
         ]);
