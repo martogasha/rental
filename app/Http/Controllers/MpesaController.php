@@ -73,10 +73,10 @@ class MpesaController extends Controller
         $bal = $getCurrentBalance->balance;
         $amount = $tranaction->amount;
         $currentBal = $bal-$amount;
-        $updateBal = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
-        $updateInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->update(['status'=>'1']);
+        $updateBal = Lease::where('id',$getLease->id)->update(['balance'=>$currentBal]);
+        $updateInvoice = \App\Models\Invoice::where('lease_id',$getLease->id)->where('status','0')->update(['status'=>'1']);
 
-        $customer = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->first();
+        $customer = \App\Models\Invoice::where('lease_id',$getLease->id)->first();
 
         $pay = Payment::where('invoice_id',$getInvoice->id)->first();
         $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
