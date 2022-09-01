@@ -94,7 +94,10 @@ class MpesaController extends Controller
         dd($response);
     }
     public function mpesaTransaction(){
-        return view('mpesa');
+        $transactions = Transaction::where('payment_method','LIPA NA MPESA')->get();
+        return view('mpesa',[
+            'transactions'=>$transactions
+        ]);
     }
     public function bankTransaction(){
         $transactions = Transaction::where('payment_method','BANK')->get();
