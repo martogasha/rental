@@ -15,10 +15,12 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('ref')->nullable();
-            $table->integer('phone')->nullable();
+            $table->string('ref')->unique();
+            $table->string('name');
             $table->integer('amount');
-            $table->string('payment_method');
+            $table->string('payment_method')->nullable();
+            $table->string('bank_type')->nullable();
+            $table->string('date');
             $table->timestamps();
         });
     }

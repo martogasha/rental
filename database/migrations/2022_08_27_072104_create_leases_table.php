@@ -17,7 +17,8 @@ class CreateLeasesTable extends Migration
             $table->id();
             $table->integer('customer_id');
             $table->integer('house_id');
-            $table->integer('transaction_id');
+            $table->integer('balance');
+            $table->integer('status')->default('0');
             $table->timestamps();
         });
     }

@@ -9,7 +9,7 @@ class Lease extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'customer_id','house_id','transaction_id'
+        'customer_id','house_id','balance','status'
     ];
     public function house(){
         return $this->belongsTo(House::class);

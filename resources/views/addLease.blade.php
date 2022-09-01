@@ -777,14 +777,24 @@
                         <span class="nav-text">Customer Lease</span>
                     </a>
                 </li>
-                <li><a class="has-arrow ai-icon" href="{{url('transaction')}}" aria-expanded="false">
+                <li><a class="has-arrow ai-icon" href="{{url('mpesaTransaction')}}" aria-expanded="false">
                         <i class="flaticon-381-networking"></i>
-                        <span class="nav-text">Transactions</span>
+                        <span class="nav-text">Mpesa</span>
                     </a>
                 </li>
-                <li><a class="has-arrow ai-icon" href="{{url('customers')}}" aria-expanded="false">
+                <li><a class="has-arrow ai-icon" href="{{url('bankTransaction')}}" aria-expanded="false">
                         <i class="flaticon-381-networking"></i>
-                        <span class="nav-text">Customers</span>
+                        <span class="nav-text">Bank</span>
+                    </a>
+                </li>
+                <li><a class="has-arrow ai-icon" href="{{url('chequeTransaction')}}" aria-expanded="false">
+                        <i class="flaticon-381-networking"></i>
+                        <span class="nav-text">Cheques</span>
+                    </a>
+                </li>
+                <li><a class="has-arrow ai-icon" href="{{url('billing')}}" aria-expanded="false">
+                        <i class="flaticon-381-networking"></i>
+                        <span class="nav-text">BILL</span>
                     </a>
                 </li>
                 <li><a class="has-arrow ai-icon" href="#" aria-expanded="false">
@@ -851,7 +861,7 @@
                             </div>
                             <div class="form-group">
                                 <label>House Amount</label>
-                                <input type="text" class="form-control input-default" placeholder="{{$prop->amount}}">
+                                <input type="text" class="form-control input-default" name="amount" value="{{$prop->amount}}">
                             </div>
                             <div class="form-group">
                                 <label>Customer Name</label>
@@ -862,12 +872,8 @@
                                 <input type="text" class="form-control input-default" name='customer_phone'>
                             </div>
                             <div class="form-group">
-                                <label>Payment Method</label>
-                                <select class="form-control" name="payment_method">
-                                    <option value="cash">Cash</option>
-                                    <option value="mpesa">Mpesa</option>
-                                    <option value="cheque">Cheque</option>
-                                </select>
+                                <label>Customer Email</label>
+                                <input type="email" class="form-control input-default" name='customer_email'>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Lease</button>

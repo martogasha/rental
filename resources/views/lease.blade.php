@@ -777,9 +777,19 @@
                         <span class="nav-text">Customer Lease</span>
                     </a>
                 </li>
-                <li><a class="has-arrow ai-icon" href="{{url('transaction')}}" aria-expanded="false">
+                <li><a class="has-arrow ai-icon" href="{{url('mpesaTransaction')}}" aria-expanded="false">
                         <i class="flaticon-381-networking"></i>
-                        <span class="nav-text">Transactions</span>
+                        <span class="nav-text">Mpesa</span>
+                    </a>
+                </li>
+                <li><a class="has-arrow ai-icon" href="{{url('bankTransaction')}}" aria-expanded="false">
+                        <i class="flaticon-381-networking"></i>
+                        <span class="nav-text">Bank</span>
+                    </a>
+                </li>
+                <li><a class="has-arrow ai-icon" href="{{url('chequeTransaction')}}" aria-expanded="false">
+                        <i class="flaticon-381-networking"></i>
+                        <span class="nav-text">Cheques</span>
                     </a>
                 </li>
                 <li><a class="has-arrow ai-icon" href="{{url('customers')}}" aria-expanded="false">
@@ -787,9 +797,9 @@
                         <span class="nav-text">Customers</span>
                     </a>
                 </li>
-                <li><a class="has-arrow ai-icon" href="#" aria-expanded="false">
+                <li><a class="has-arrow ai-icon" href="{{url('billing')}}" aria-expanded="false">
                         <i class="flaticon-381-networking"></i>
-                        <span class="nav-text">Logs</span>
+                        <span class="nav-text">BILL</span>
                     </a>
                 </li>
                 <li><a class="has-arrow ai-icon" href="#" aria-expanded="false">
@@ -829,7 +839,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">PROPERTIES LEASES</h4>
+                            <h4 class="card-title">CUSTOMER LEASES</h4>
                             <!-- Modal -->
                             <div class="modal fade" id="basicModal">
                                 <div class="modal-dialog" role="document">
@@ -890,8 +900,8 @@
                                         <th>House Name</th>
                                         <th>House Number</th>
                                         <th>Customer Name</th>
-                                        <th style="color:red;">Balance</th>
-                                        <th>Payment Method</th>
+                                        <th>Balance</th>
+                                        <th></th>
                                         <th>Action</th>
 
                                     </tr>
@@ -903,9 +913,10 @@
                                             <td>{{$prop->house->name}}</td>
                                             <td>{{$prop->house->number}}</td>
                                             <td>{{$prop->customer->name}}</td>
-                                            <td style="color: red">{{$prop->house->amount}}</td>
-                                            <td>{{$prop->transaction->payment_method}}</td>
-                                            <td><button class="btn btn-danger">Terminate Lease</button></td>
+                                            <td style="color: red">{{$prop->balance}}</td>
+                                            <td><a href="{{url('customer',$prop->id)}}"><button class="btn btn-danger">Unpaid</button></a></td>
+                                            <td><a href="{{url('customerPaid',$prop->id)}}"><button class="btn btn-info">Paid</button></a></td>
+                                            <td><button class="btn btn-danger">Terminate</button></td>
                                         </tr>
                                     @endforeach
                                 </table>

@@ -777,14 +777,24 @@
                         <span class="nav-text">Customer Lease</span>
                     </a>
                 </li>
-                <li><a class="has-arrow ai-icon" href="{{url('transaction')}}" aria-expanded="false">
+                <li><a class="has-arrow ai-icon" href="{{url('mpesaTransaction')}}" aria-expanded="false">
                         <i class="flaticon-381-networking"></i>
-                        <span class="nav-text">Transactions</span>
+                        <span class="nav-text">Mpesa</span>
                     </a>
                 </li>
-                <li><a class="has-arrow ai-icon" href="{{url('customers')}}" aria-expanded="false">
+                <li><a class="has-arrow ai-icon" href="{{url('bankTransaction')}}" aria-expanded="false">
                         <i class="flaticon-381-networking"></i>
-                        <span class="nav-text">Customers</span>
+                        <span class="nav-text">Bank</span>
+                    </a>
+                </li>
+                <li><a class="has-arrow ai-icon" href="{{url('chequeTransaction')}}" aria-expanded="false">
+                        <i class="flaticon-381-networking"></i>
+                        <span class="nav-text">Cheques</span>
+                    </a>
+                </li>
+                <li><a class="has-arrow ai-icon" href="{{url('billing')}}" aria-expanded="false">
+                        <i class="flaticon-381-networking"></i>
+                        <span class="nav-text">BILL</span>
                     </a>
                 </li>
                 <li><a class="has-arrow ai-icon" href="#" aria-expanded="false">

@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Invoice;
 use App\Models\Customer;
 use App\Models\House;
 use App\Models\Lease;
+use App\Models\Payment;
 use App\Models\Property;
 use App\Models\Transaction;
+use App\Models\Type;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class IndexController extends Controller
 {
@@ -20,7 +25,7 @@ class IndexController extends Controller
             'props'=>$props
         ]);
     }
-    public function customers(){
+    public function billing(){
         $props = Lease::all();
         return view('customers',[
             'props'=>$props
@@ -161,19 +166,28 @@ class IndexController extends Controller
         $customer = Customer::create([
             'name'=>$request->input('customer_name'),
             'phone'=>$request->input('customer_phone'),
+            'email'=>$request->input('customer_email'),
         ]);
-        $transaction = Transaction::create([
-            'ref'=>$request->input('ref'),
-            'amount'=>$request->input('amount'),
-            'payment_method'=>$request->input('payment_method'),
-            'phone'=>$request->input('customer_phone'),
-        ]);
-
         $lease = Lease::create([
             'customer_id'=>$customer->id,
             'house_id'=>$request->house_id,
-            'transaction_id'=>$transaction->id,
+            'balance'=>$request->input('amount'),
         ]);
+        $invoice = \App\Models\Invoice::create([
+            'lease_id'=>$lease->id,
+            'date'=>Carbon::now()->format('d/m/Y'),
+        ]);
+        $type = Type::create([
+           'type'=>'Lease Agreement',
+           'amount'=>$request->input('amount'),
+           'invoice_id'=>$invoice->id,
+        ]);
+        $customer = \App\Models\Invoice::find($invoice->id);
+        $pay = Payment::where('invoice_id',$invoice->id)->first();
+        $total = Type::where('invoice_id',$invoice->id)->sum('amount');
+        $invoices = Type::where('invoice_id',$invoice->id)->get();
+        $payments = Payment::where('invoice_id',$invoice->id)->get();
+        Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
         $updateHouse = House::where('id',$request->house_id)->update(['status'=>('OCCUPIED')]);
 
         return redirect(url('lease'))->with('success','LEASE CREATED SUCCESS');
@@ -189,5 +203,159 @@ class IndexController extends Controller
         return view('addLease',[
             'prop'=>$prop
         ]);
+    }
+    public function storeBill(Request $request){
+            $customer = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->first();
+
+        if ($request->input('expense_type')=='Rent'){
+            $getInv = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->first();
+            if ($getInv){
+                $type = Type::create([
+                    'type'=>'Rent',
+                    'amount'=>$request->input('amount'),
+                    'invoice_id'=>$getInv->id,
+                ]);
+                $getBal = Lease::where('id',$request->input('lease_id'))->first();
+                $bal = $getBal->balance;
+                $currentBal = $bal + $request->input('amount');
+                $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                $pay = Payment::where('invoice_id',$getInv->id)->first();
+                $total = Type::where('invoice_id',$getInv->id)->sum('amount');
+                $invoices = Type::where('invoice_id',$getInv->id)->get();
+                $payments = Payment::where('invoice_id',$getInv->id)->get();
+                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+            }
+            else{
+                $invoice = \App\Models\Invoice::create([
+                    'lease_id'=>$request->input('lease_id'),
+                    'date'=>Carbon::now()->format('d/m/Y'),
+                ]);
+                $type = Type::create([
+                    'type'=>'Rent',
+                    'amount'=>$request->input('amount'),
+                    'invoice_id'=>$invoice->id,
+                ]);
+                $getBal = Lease::where('id',$request->input('lease_id'))->first();
+                $bal = $getBal->balance;
+                $currentBal = $bal + $request->input('amount');
+                $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                $pay = Payment::where('invoice_id',$invoice->id)->first();
+                $total = Type::where('id',$type->id)->sum('amount');
+                $invoices = Type::where('invoice_id',$invoice->id)->get();
+                $payments = Payment::where('invoice_id',$invoice->id)->get();
+                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+            }
+
+        }
+        elseif($request->input('expense_type')=='Water'){
+            $getInv = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->first();
+            if ($getInv){
+                $type = Type::create([
+                    'type'=>'Water',
+                    'amount'=>$request->input('enter_amount'),
+                    'invoice_id'=>$getInv->id,
+                ]);
+                $getBal = Lease::where('id',$request->input('lease_id'))->first();
+                $bal = $getBal->balance;
+                $currentBal = $bal + $request->input('enter_amount');
+                $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                $pay = Payment::where('invoice_id',$getInv->id)->first();
+                $total = Type::where('invoice_id',$getInv->id)->sum('amount');
+                $invoices = Type::where('invoice_id',$getInv->id)->get();
+                $payments = Payment::where('invoice_id',$getInv->id)->get();
+                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+            }
+            else{
+                $invoice = \App\Models\Invoice::create([
+                    'lease_id'=>$request->input('lease_id'),
+                    'date'=>Carbon::now()->format('d/m/Y'),
+                ]);
+                $type = Type::create([
+                    'type'=>'Water',
+                    'amount'=>$request->input('amount'),
+                    'invoice_id'=>$invoice->id,
+                ]);
+                $getBal = Lease::where('id',$request->input('lease_id'))->first();
+                $bal = $getBal->balance;
+                $currentBal = $bal + $request->input('enter_amount');
+                $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                $pay = Payment::where('invoice_id',$invoice->id)->first();
+                $total = Type::where('id',$type->id)->sum('amount');
+                $invoices = Type::where('invoice_id',$invoice->id)->get();
+                $payments = Payment::where('invoice_id',$invoice->id)->get();
+                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+            }
+        }
+        else{
+            $getInv = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->first();
+            if ($getInv){
+                $type = Type::create([
+                    'type'=>'Garbage',
+                    'amount'=>$request->input('enter_amount'),
+                    'invoice_id'=>$getInv->id,
+                ]);
+                $getBal = Lease::where('id',$request->input('lease_id'))->first();
+                $bal = $getBal->balance;
+                $currentBal = $bal + $request->input('enter_amount');
+                $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                $pay = Payment::where('invoice_id',$getInv->id)->first();
+                $total = Type::where('invoice_id',$getInv->id)->sum('amount');
+                $invoices = Type::where('invoice_id',$getInv->id)->get();
+                $payments = Payment::where('invoice_id',$getInv->id)->get();
+                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+            }
+            else{
+                $invoice = \App\Models\Invoice::create([
+                    'lease_id'=>$request->input('lease_id'),
+                    'date'=>Carbon::now()->format('d/m/Y'),
+                ]);
+                $type = Type::create([
+                    'type'=>'Garbage',
+                    'amount'=>$request->input('amount'),
+                    'invoice_id'=>$invoice->id,
+                ]);
+                $getBal = Lease::where('id',$request->input('lease_id'))->first();
+                $bal = $getBal->balance;
+                $currentBal = $bal + $request->input('enter_amount');
+                $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                $pay = Payment::where('invoice_id',$invoice->id)->first();
+                $total = Type::where('id',$type->id)->sum('amount');
+                $invoices = Type::where('invoice_id',$invoice->id)->get();
+                $payments = Payment::where('invoice_id',$invoice->id)->get();
+                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+            }
+        }
+        return redirect()->back()->with('success','INVOICED SUCCESSFULLY');
+
+    }
+    public function storeTransaction(Request $request){
+        $tranaction = Transaction::create([
+            'ref'=>$request->input('ref_no'),
+            'name'=>$request->input('name'),
+            'amount'=>$request->input('amount'),
+            'payment_method'=>$request->input('payment_type'),
+            'bank_type'=>$request->input('bank_type'),
+            'date'=>Carbon::now()->format('d/m/Y'),
+        ]);
+        $getInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->first();
+        $payment = Payment::create([
+           'transaction_id'=> $tranaction->id,
+           'invoice_id'=> $getInvoice->id,
+        ]);
+        $getCurrentBalance = Lease::find($request->input('lease_id'));
+        $bal = $getCurrentBalance->balance;
+        $amount = $request->input('amount');
+        $currentBal = $bal-$amount;
+        $updateBal = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+        $updateInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->update(['status'=>'1']);
+
+        $customer = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->first();
+
+        $pay = Payment::where('invoice_id',$getInvoice->id)->first();
+        $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
+        $invoices = Type::where('invoice_id',$getInvoice->id)->get();
+        $payments = Payment::where('invoice_id',$getInvoice->id)->get();
+        Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+        return redirect()->back()->with('success','TRANSACTION SAVED SUCCESSFULLY');
     }
 }
