@@ -69,7 +69,7 @@ class MpesaController extends Controller
             'transaction_id'=> $tranaction->id,
             'invoice_id'=> $getInvoice->id,
         ]);
-        $getCurrentBalance = Lease::find($request->input('lease_id'));
+        $getCurrentBalance = Lease::find($getLease->id);
         $bal = $getCurrentBalance->balance;
         $amount = $tranaction->amount;
         $currentBal = $bal-$amount;
