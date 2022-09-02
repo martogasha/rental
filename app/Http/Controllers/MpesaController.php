@@ -78,10 +78,10 @@ class MpesaController extends Controller
 
         $customer = \App\Models\Invoice::where('lease_id',$getLease->id)->first();
 
-        $pay = Payment::where('invoice_id',$getInvoice->id)->first();
-        $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
-        $invoices = Type::where('invoice_id',$getInvoice->id)->get();
-        $payments = Payment::where('invoice_id',$getInvoice->id)->get();
+        $pay = Payment::where('invoice_id',$updateInvoice->id)->first();
+        $total = Type::where('invoice_id',$updateInvoice->id)->sum('amount');
+        $invoices = Type::where('invoice_id',$updateInvoice->id)->get();
+        $payments = Payment::where('invoice_id',$updateInvoice->id)->get();
         Mail::to($customer->lease->customer->email)->send(new \App\Mail\Invoice($customer,$pay,$total,$invoices,$payments));
     }
     public function authenticate(){
