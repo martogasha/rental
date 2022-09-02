@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cat;
-use App\Mail\Invoice;
+use App\Models\Invoice;
 use App\Models\Customer;
 use App\Models\Lease;
 use App\Models\Payment;
@@ -82,7 +82,7 @@ class MpesaController extends Controller
         $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
         $invoices = Type::where('invoice_id',$getInvoice->id)->get();
         $payments = Payment::where('invoice_id',$getInvoice->id)->get();
-        Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+        Mail::to($customer->lease->customer->email)->send(new \App\Mail\Invoice($customer,$pay,$total,$invoices,$payments));
     }
     public function authenticate(){
         global $K2;
