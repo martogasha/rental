@@ -1,5 +1,4 @@
 <title>{{$customer->lease->customer->name}} - Invoice</title>
-@include('flash-message')
 <div class="card-body">
     <div id="invoiceholder">
         <div id="invoice" class="effect2">
