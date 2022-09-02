@@ -1045,16 +1045,6 @@
          $('#rentAmount').hide();
      }
  });
-    $('#payment').on('change',function () {
-        var valu = $(this).val();
-        if (valu =='CHEQUE'){
-            $('#bank_type').hide();
-        }
-        else {
-            $('#bank_type').show();
-
-        }
-    });
     $(document).on('click','.view',function () {
         $value = $(this).attr('id');
         $.ajax({
