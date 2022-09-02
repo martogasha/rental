@@ -799,11 +799,6 @@
                 </li>
                 <li><a class="has-arrow ai-icon" href="#" aria-expanded="false">
                         <i class="flaticon-381-networking"></i>
-                        <span class="nav-text">Logs</span>
-                    </a>
-                </li>
-                <li><a class="has-arrow ai-icon" href="#" aria-expanded="false">
-                        <i class="flaticon-381-networking"></i>
                         <span class="nav-text">User Roles</span>
                     </a>
                 </li>

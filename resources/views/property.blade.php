@@ -782,11 +782,7 @@
                         <span class="nav-text">Transactions</span>
                     </a>
                 </li>
-                <li><a class="has-arrow ai-icon" href="{{url('billing')}}" aria-expanded="false">
-                        <i class="flaticon-381-networking"></i>
-                        <span class="nav-text">BILL</span>
-                    </a>
-                </li>
+
                 <li><a class="has-arrow ai-icon" href="#" aria-expanded="false">
                         <i class="flaticon-381-networking"></i>
                         <span class="nav-text">Logs</span>
