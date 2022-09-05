@@ -80,7 +80,7 @@ class MpesaController extends Controller
 
             }
 
-            $customer = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->first();
+            $customer = \App\Models\Invoice::where('lease_id',$getLease->id)->first();
 
             $pay = Lease::where('id',$getLease->id)->first();
             $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
