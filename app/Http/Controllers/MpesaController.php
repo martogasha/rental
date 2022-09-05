@@ -65,24 +65,58 @@ class MpesaController extends Controller
         $getUser = Customer::where('phone',$input['event']['resource']['sender_phone_number'])->first();
         $getLease = Lease::where('customer_id',$getUser->id)->first();
         $getInvoice = \App\Models\Invoice::where('lease_id',$getLease->id)->where('status','0')->first();
-        $payment = Payment::create([
-            'transaction_id'=> $tranaction->id,
-            'invoice_id'=> $getInvoice->id,
-        ]);
-        $getCurrentBalance = Lease::find($getLease->id);
-        $bal = $getCurrentBalance->balance;
-        $amount = $tranaction->amount;
-        $currentBal = $bal-$amount;
-        $updateBal = Lease::where('id',$getLease->id)->update(['balance'=>$currentBal]);
-        $updateInvoice = \App\Models\Invoice::where('lease_id',$getLease->id)->where('status','0')->update(['status'=>'1']);
+        if ($getInvoice){
+            $payment = Payment::create([
+                'transaction_id'=> $tranaction->id,
+                'invoice_id'=> $getInvoice->id,
+            ]);
+            $getCurrentBalance = Lease::find($getLease->id);
+            $bal = $getCurrentBalance->balance;
+            $amount = $tranaction->amount;
+            $currentBal = $bal-$amount;
+            $updateBal = Lease::where('id',$getLease->id)->update(['balance'=>$currentBal]);
+            if ($currentBal<='0'){
+                $updateInvoice = \App\Models\Invoice::where('lease_id',$getLease->id)->where('status','0')->update(['status'=>'1']);
 
-        $customer = \App\Models\Invoice::where('lease_id',$getLease->id)->where('status',1)->first();
+            }
 
-        $pay = Payment::where('invoice_id',$customer->id)->first();
-        $total = Type::where('invoice_id',$customer->id)->sum('amount');
-        $invoices = Type::where('invoice_id',$customer->id)->get();
-        $payments = Payment::where('invoice_id',$customer->id)->get();
-        Mail::to($customer->lease->customer->email)->send(new \App\Mail\Invoice($customer,$pay,$total,$invoices,$payments));
+            $customer = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->first();
+
+            $pay = Lease::where('id',$getLease->id)->first();
+            $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
+            $invoices = Type::where('invoice_id',$getInvoice->id)->get();
+            $payments = Payment::where('invoice_id',$getInvoice->id)->get();
+            Mail::to($customer->lease->customer->email)->send(new \App\Mail\Invoice($customer,$pay,$total,$invoices,$payments));
+        }
+        else{
+            $getLease = Lease::find($getLease->id);
+            $bal = $getLease->balance;
+            $amount = $request->input('amount');
+            $currentBal = $bal-$amount;
+            $updateBal = Lease::where('id',$getLease->id)->update(['balance'=>$currentBal]);
+            $invoice = \App\Models\Invoice::create([
+                'lease_id'=>$getLease->id,
+                'date'=>Carbon::now()->format('d/m/Y'),
+            ]);
+            $type = Type::create([
+                'type'=>'Overdraft',
+                'amount'=>$tranaction->amount,
+                'invoice_id'=>$invoice->id,
+                'date'=>Carbon::now()->format('d/m/Y'),
+            ]);
+            $payment = Payment::create([
+                'transaction_id'=> $tranaction->id,
+                'invoice_id'=> $invoice->id,
+            ]);
+            $customer = \App\Models\Invoice::where('lease_id',$getLease->id)->first();
+            $getInvoice = \App\Models\Invoice::where('lease_id',$getLease->id)->where('status','0')->update(['status'=>'1']);
+            $getInv = \App\Models\Invoice::where('lease_id',$getLease->id)->where('status','1')->latest()->first();
+            $pay = Lease::where('id',$getLease->id)->first();
+            $total = Type::where('invoice_id',$getInv->id)->sum('amount');
+            $invoices = Type::where('invoice_id',$getInv->id)->get();
+            $payments = Payment::where('invoice_id',$getInv->id)->get();
+            Mail::to($customer->lease->customer->email)->send(new \App\Mail\Invoice($customer,$pay,$total,$invoices,$payments));
+        }
     }
     public function authenticate(){
         global $K2;
@@ -136,7 +170,9 @@ class MpesaController extends Controller
         $total = Type::where('invoice_id',$id)->sum('amount');
         $customer = Invoice::where('id',$id)->where('status',0)->first();
         $payments = Payment::where('invoice_id',$id)->get();
-        $pay = Payment::where('invoice_id',$id)->first();
+        $paying = Invoice::where('id',$id)->first();
+        $pay = Lease::find($paying->lease_id);
+
         return view('invoice',[
             'invoices'=>$invoices,
             'total'=>$total,
@@ -148,7 +184,7 @@ class MpesaController extends Controller
     public function invoicePaid($id){
         $invoices = Type::where('invoice_id',$id)->get();
         $total = Type::where('invoice_id',$id)->sum('amount');
-        $customer = Invoice::where('id',$id)->first();
+        $customer = Invoice::where('id',$id)->where('status',1)->first();
         $payments = Payment::where('invoice_id',$id)->get();
         $pay = Payment::where('invoice_id',$customer->id)->first();
         return view('invoice',[

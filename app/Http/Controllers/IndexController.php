@@ -181,9 +181,10 @@ class IndexController extends Controller
            'type'=>'Lease Agreement',
            'amount'=>$request->input('amount'),
            'invoice_id'=>$invoice->id,
+            'date'=>Carbon::now()->format('d/m/Y'),
         ]);
         $customer = \App\Models\Invoice::find($invoice->id);
-        $pay = Payment::where('invoice_id',$invoice->id)->first();
+        $pay = Lease::where('id',$invoice->lease_id)->first();
         $total = Type::where('invoice_id',$invoice->id)->sum('amount');
         $invoices = Type::where('invoice_id',$invoice->id)->get();
         $payments = Payment::where('invoice_id',$invoice->id)->get();
@@ -214,12 +215,13 @@ class IndexController extends Controller
                     'type'=>'Rent',
                     'amount'=>$request->input('amount'),
                     'invoice_id'=>$getInv->id,
+                    'date'=>Carbon::now()->format('d/m/Y'),
                 ]);
                 $getBal = Lease::where('id',$request->input('lease_id'))->first();
                 $bal = $getBal->balance;
                 $currentBal = $bal + $request->input('amount');
                 $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
-                $pay = Payment::where('invoice_id',$getInv->id)->first();
+                $pay = Lease::where('id',$request->input('lease_id'))->first();
                 $total = Type::where('invoice_id',$getInv->id)->sum('amount');
                 $invoices = Type::where('invoice_id',$getInv->id)->get();
                 $payments = Payment::where('invoice_id',$getInv->id)->get();
@@ -230,20 +232,53 @@ class IndexController extends Controller
                     'lease_id'=>$request->input('lease_id'),
                     'date'=>Carbon::now()->format('d/m/Y'),
                 ]);
-                $type = Type::create([
-                    'type'=>'Rent',
-                    'amount'=>$request->input('amount'),
-                    'invoice_id'=>$invoice->id,
-                ]);
                 $getBal = Lease::where('id',$request->input('lease_id'))->first();
                 $bal = $getBal->balance;
                 $currentBal = $bal + $request->input('amount');
-                $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
-                $pay = Payment::where('invoice_id',$invoice->id)->first();
-                $total = Type::where('id',$type->id)->sum('amount');
-                $invoices = Type::where('invoice_id',$invoice->id)->get();
-                $payments = Payment::where('invoice_id',$invoice->id)->get();
-                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                $type = Type::create([
+                    'type'=>'Rent',
+                    'amount'=>$currentBal*-1,
+                    'invoice_id'=>$invoice->id,
+                    'date'=>Carbon::now()->format('d/m/Y'),
+                ]);
+                if ($bal<0){
+                    $overdraft = $bal*-1;
+                    $tranaction = Transaction::create([
+                        'name'=>'overdraft',
+                        'amount'=>$overdraft,
+                        'payment_method'=>'Overdraft',
+                        'bank_type'=>'Overdraft',
+                        'date'=>Carbon::now()->format('d/m/Y'),
+                    ]);
+                    $getInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->first();
+                    $payment = Payment::create([
+                        'transaction_id'=> $tranaction->id,
+                        'invoice_id'=> $getInvoice->id,
+                        'date'=>Carbon::now()->format('d/m/Y'),
+                    ]);
+                    $updateBal = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                    if ($currentBal<='0'){
+                        $updateInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->update(['status'=>'1']);
+
+                    }
+                    $customer = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->first();
+
+                    $pay = Lease::where('id',$request->input('lease_id'))->first();
+                    $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
+                    $invoices = Type::where('invoice_id',$getInvoice->id)->get();
+                    $payments = Payment::where('invoice_id',$getInvoice->id)->get();
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+
+                }
+                else{
+                    $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                    $pay = Lease::where('id',$request->input('lease_id'))->first();
+                    $total = Type::where('id',$type->id)->sum('amount');
+                    $invoices = Type::where('invoice_id',$invoice->id)->get();
+                    $payments = Payment::where('invoice_id',$invoice->id)->get();
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                }
+
             }
 
         }
@@ -254,12 +289,13 @@ class IndexController extends Controller
                     'type'=>'Water',
                     'amount'=>$request->input('enter_amount'),
                     'invoice_id'=>$getInv->id,
+                    'date'=>Carbon::now()->format('d/m/Y'),
                 ]);
                 $getBal = Lease::where('id',$request->input('lease_id'))->first();
                 $bal = $getBal->balance;
                 $currentBal = $bal + $request->input('enter_amount');
                 $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
-                $pay = Payment::where('invoice_id',$getInv->id)->first();
+                $pay = Lease::where('id',$request->input('lease_id'))->first();
                 $total = Type::where('invoice_id',$getInv->id)->sum('amount');
                 $invoices = Type::where('invoice_id',$getInv->id)->get();
                 $payments = Payment::where('invoice_id',$getInv->id)->get();
@@ -270,20 +306,53 @@ class IndexController extends Controller
                     'lease_id'=>$request->input('lease_id'),
                     'date'=>Carbon::now()->format('d/m/Y'),
                 ]);
-                $type = Type::create([
-                    'type'=>'Water',
-                    'amount'=>$request->input('amount'),
-                    'invoice_id'=>$invoice->id,
-                ]);
                 $getBal = Lease::where('id',$request->input('lease_id'))->first();
                 $bal = $getBal->balance;
                 $currentBal = $bal + $request->input('enter_amount');
-                $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
-                $pay = Payment::where('invoice_id',$invoice->id)->first();
-                $total = Type::where('id',$type->id)->sum('amount');
-                $invoices = Type::where('invoice_id',$invoice->id)->get();
-                $payments = Payment::where('invoice_id',$invoice->id)->get();
-                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                $type = Type::create([
+                    'type'=>'Water',
+                    'amount'=>$request->input('enter_amount'),
+                    'invoice_id'=>$invoice->id,
+                    'date'=>Carbon::now()->format('d/m/Y'),
+                ]);
+                if ($bal<0){
+                    $overdraft = $bal*-1;
+                    $tranaction = Transaction::create([
+                        'name'=>'overdraft',
+                        'amount'=>$overdraft,
+                        'payment_method'=>'Overdraft',
+                        'bank_type'=>'Overdraft',
+                        'date'=>Carbon::now()->format('d/m/Y'),
+                    ]);
+                    $getInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->first();
+                    $payment = Payment::create([
+                        'transaction_id'=> $tranaction->id,
+                        'invoice_id'=> $getInvoice->id,
+                        'date'=>Carbon::now()->format('d/m/Y'),
+                    ]);
+                    $updateBal = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                    if ($currentBal<='0'){
+                        $updateInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->update(['status'=>'1']);
+
+                    }
+                    $customer = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->first();
+
+                    $pay = Lease::where('id',$request->input('lease_id'))->first();
+                    $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
+                    $invoices = Type::where('invoice_id',$getInvoice->id)->get();
+                    $payments = Payment::where('invoice_id',$getInvoice->id)->get();
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+
+                }
+                else{
+                    $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                    $pay = Lease::where('id',$request->input('lease_id'))->first();
+                    $total = Type::where('id',$type->id)->sum('amount');
+                    $invoices = Type::where('invoice_id',$invoice->id)->get();
+                    $payments = Payment::where('invoice_id',$invoice->id)->get();
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                }
+
             }
         }
         else{
@@ -293,12 +362,13 @@ class IndexController extends Controller
                     'type'=>'Garbage',
                     'amount'=>$request->input('enter_amount'),
                     'invoice_id'=>$getInv->id,
+                    'date'=>Carbon::now()->format('d/m/Y'),
                 ]);
                 $getBal = Lease::where('id',$request->input('lease_id'))->first();
                 $bal = $getBal->balance;
                 $currentBal = $bal + $request->input('enter_amount');
                 $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
-                $pay = Payment::where('invoice_id',$getInv->id)->first();
+                $pay = Lease::where('id',$request->input('lease_id'))->first();
                 $total = Type::where('invoice_id',$getInv->id)->sum('amount');
                 $invoices = Type::where('invoice_id',$getInv->id)->get();
                 $payments = Payment::where('invoice_id',$getInv->id)->get();
@@ -309,20 +379,53 @@ class IndexController extends Controller
                     'lease_id'=>$request->input('lease_id'),
                     'date'=>Carbon::now()->format('d/m/Y'),
                 ]);
-                $type = Type::create([
-                    'type'=>'Garbage',
-                    'amount'=>$request->input('amount'),
-                    'invoice_id'=>$invoice->id,
-                ]);
                 $getBal = Lease::where('id',$request->input('lease_id'))->first();
                 $bal = $getBal->balance;
                 $currentBal = $bal + $request->input('enter_amount');
-                $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
-                $pay = Payment::where('invoice_id',$invoice->id)->first();
-                $total = Type::where('id',$type->id)->sum('amount');
-                $invoices = Type::where('invoice_id',$invoice->id)->get();
-                $payments = Payment::where('invoice_id',$invoice->id)->get();
-                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                $type = Type::create([
+                    'type'=>'Garbage',
+                    'amount'=>$request->input('enter_amount'),
+                    'invoice_id'=>$invoice->id,
+                    'date'=>Carbon::now()->format('d/m/Y'),
+                ]);
+                if ($bal<0){
+                    $overdraft = $bal*-1;
+                    $tranaction = Transaction::create([
+                        'name'=>'overdraft',
+                        'amount'=>$overdraft,
+                        'payment_method'=>'Overdraft',
+                        'bank_type'=>'Overdraft',
+                        'date'=>Carbon::now()->format('d/m/Y'),
+                    ]);
+                    $getInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->first();
+                    $payment = Payment::create([
+                        'transaction_id'=> $tranaction->id,
+                        'invoice_id'=> $getInvoice->id,
+                        'date'=>Carbon::now()->format('d/m/Y'),
+                    ]);
+                    $updateBal = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                    if ($currentBal<='0'){
+                        $updateInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->update(['status'=>'1']);
+
+                    }
+                    $customer = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->first();
+
+                    $pay = Lease::where('id',$request->input('lease_id'))->first();
+                    $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
+                    $invoices = Type::where('invoice_id',$getInvoice->id)->get();
+                    $payments = Payment::where('invoice_id',$getInvoice->id)->get();
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+
+                }
+                else{
+                    $updateBalance = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+                    $pay = Lease::where('id',$request->input('lease_id'))->first();
+                    $total = Type::where('id',$type->id)->sum('amount');
+                    $invoices = Type::where('invoice_id',$invoice->id)->get();
+                    $payments = Payment::where('invoice_id',$invoice->id)->get();
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                }
+
             }
         }
         return redirect()->back()->with('success','INVOICED SUCCESSFULLY');
@@ -338,24 +441,62 @@ class IndexController extends Controller
             'date'=>Carbon::now()->format('d/m/Y'),
         ]);
         $getInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->first();
-        $payment = Payment::create([
-           'transaction_id'=> $tranaction->id,
-           'invoice_id'=> $getInvoice->id,
-        ]);
-        $getCurrentBalance = Lease::find($request->input('lease_id'));
-        $bal = $getCurrentBalance->balance;
-        $amount = $request->input('amount');
-        $currentBal = $bal-$amount;
-        $updateBal = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
-        $updateInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->update(['status'=>'1']);
+        if ($getInvoice){
+            $payment = Payment::create([
+                'transaction_id'=> $tranaction->id,
+                'invoice_id'=> $getInvoice->id,
+            ]);
+            $getCurrentBalance = Lease::find($request->input('lease_id'));
+            $bal = $getCurrentBalance->balance;
+            $amount = $request->input('amount');
+            $currentBal = $bal-$amount;
+            $updateBal = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+            if ($currentBal<='0'){
+                $updateInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->update(['status'=>'1']);
 
-        $customer = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->first();
+            }
 
-        $pay = Payment::where('invoice_id',$getInvoice->id)->first();
-        $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
-        $invoices = Type::where('invoice_id',$getInvoice->id)->get();
-        $payments = Payment::where('invoice_id',$getInvoice->id)->get();
-        Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
-        return redirect()->back()->with('success','TRANSACTION SAVED SUCCESSFULLY');
+            $customer = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->first();
+
+            $pay = Lease::where('id',$request->input('lease_id'))->first();
+            $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
+            $invoices = Type::where('invoice_id',$getInvoice->id)->get();
+            $payments = Payment::where('invoice_id',$getInvoice->id)->get();
+            Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+            return redirect()->back()->with('success','TRANSACTION SAVED SUCCESSFULLY');
+        }
+        else{
+            $getLease = Lease::find($request->input('lease_id'));
+            $bal = $getLease->balance;
+            $amount = $request->input('amount');
+            $currentBal = $bal-$amount;
+            $updateBal = Lease::where('id',$request->input('lease_id'))->update(['balance'=>$currentBal]);
+            $invoice = \App\Models\Invoice::create([
+                'lease_id'=>$request->input('lease_id'),
+                'date'=>Carbon::now()->format('d/m/Y'),
+            ]);
+            $type = Type::create([
+                'type'=>'Overdraft',
+                'amount'=>$request->input('amount'),
+                'invoice_id'=>$invoice->id,
+                'date'=>Carbon::now()->format('d/m/Y'),
+            ]);
+            $payment = Payment::create([
+                'transaction_id'=> $tranaction->id,
+                'invoice_id'=> $invoice->id,
+            ]);
+            $customer = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->first();
+            $getInvoice = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','0')->update(['status'=>'1']);
+            $getInv = \App\Models\Invoice::where('lease_id',$request->input('lease_id'))->where('status','1')->latest()->first();
+            $pay = Lease::where('id',$request->input('lease_id'))->first();
+            $total = Type::where('invoice_id',$getInv->id)->sum('amount');
+            $invoices = Type::where('invoice_id',$getInv->id)->get();
+            $payments = Payment::where('invoice_id',$getInv->id)->get();
+            Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+            return redirect()->back()->with('success','TRANSACTION SAVED SUCCESSFULLY');
+
+
+        }
+
     }
 }

@@ -802,6 +802,11 @@
                         <span class="nav-text">User Roles</span>
                     </a>
                 </li>
+                <li><a class="has-arrow ai-icon" href="{{url('terminated')}}" aria-expanded="false">
+                        <i class="flaticon-381-networking"></i>
+                        <span class="nav-text">Terminated Lease</span>
+                    </a>
+                </li>
             </ul>
             <div class="copyright">
                 <p><strong>Omah Dashboard</strong> ©All Rights Reserved</p>
@@ -872,7 +877,6 @@
                                             <td>{{$invoice->lease->customer->name}}</td>
                                             <td>Ksh {{\App\Models\Type::where('invoice_id',$invoice->id)->sum('amount')}}</td>
                                             <td>{{$invoice->date}}</td>
-                                            <td><button class="btn btn-info">View</button></td>
                                             <td><a href="{{url('invoicePaid',$invoice->id)}}"><button class="btn btn-danger">Invoice</button></a></td>
                                         </tr>
                                     @endforeach

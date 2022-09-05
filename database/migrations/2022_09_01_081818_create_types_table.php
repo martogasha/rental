@@ -18,6 +18,7 @@ class CreateTypesTable extends Migration
             $table->string('type');
             $table->integer('amount');
             $table->integer('invoice_id');
+            $table->string('date');
             $table->timestamps();
         });
     }

@@ -807,6 +807,11 @@
                         <span class="nav-text">User Roles</span>
                     </a>
                 </li>
+                <li><a class="has-arrow ai-icon" href="{{url('terminated')}}" aria-expanded="false">
+                        <i class="flaticon-381-networking"></i>
+                        <span class="nav-text">Terminated Lease</span>
+                    </a>
+                </li>
             </ul>
             <div class="copyright">
                 <p><strong>Omah Dashboard</strong> ©All Rights Reserved</p>

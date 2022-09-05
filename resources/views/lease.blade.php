@@ -1,5 +1,5 @@
 @include('header')
-
+<title>Customer Lease - Rentals</title>
 <body>
 
 <!--*******************
@@ -802,6 +802,11 @@
                         <span class="nav-text">User Roles</span>
                     </a>
                 </li>
+                <li><a class="has-arrow ai-icon" href="{{url('terminated')}}" aria-expanded="false">
+                        <i class="flaticon-381-networking"></i>
+                        <span class="nav-text">Terminated Lease</span>
+                    </a>
+                </li>
             </ul>
             <div class="copyright">
                 <p><strong>Omah Dashboard</strong> ©All Rights Reserved</p>
@@ -897,6 +902,7 @@
                                         <th>Customer Name</th>
                                         <th>Balance</th>
                                         <th></th>
+                                        <th></th>
                                         <th>Action</th>
 
                                     </tr>
@@ -908,8 +914,22 @@
                                             <td>{{$prop->house->name}}</td>
                                             <td>{{$prop->house->number}}</td>
                                             <td>{{$prop->customer->name}}</td>
-                                            <td style="color: red">{{$prop->balance}}</td>
-                                            <td><a href="{{url('customer',$prop->id)}}"><button class="btn btn-danger">Unpaid</button></a></td>
+                                            @if($prop->balance>0)
+                                                <td style="color:red">{{$prop->balance}}</td>
+                                            @else
+                                                <td style="color:green">{{$prop->balance}}</td>
+
+                                            @endif
+                                            <td>
+                                                <a href="{{url('customer',$prop->id)}}"><button class="btn btn-danger" style="width: 150px;height: 55px">Unpaid
+
+                                                        @if(\App\Models\Invoice::where('lease_id',$prop->id)->where('status','0')->count()==0)
+                                                        @else
+                                                            <span class="badge badge-light">{{\App\Models\Invoice::where('lease_id',$prop->id)->where('status','0')->count()}}</span>
+                                                        @endif
+                                                    </button>
+                                                </a>
+                                            </td>
                                             <td><a href="{{url('customerPaid',$prop->id)}}"><button class="btn btn-info">Paid</button></a></td>
                                             <td><button class="btn btn-danger">Terminate</button></td>
                                         </tr>

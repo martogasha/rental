@@ -15,7 +15,7 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('ref')->unique();
+            $table->string('ref')->unique()->nullable();
             $table->string('name');
             $table->integer('amount');
             $table->string('payment_method')->nullable();

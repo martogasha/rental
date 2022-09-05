@@ -16,7 +16,7 @@
                     <h2>Hello {{$customer->lease->customer->name}},</h2>
                 </div>
                 <div class="clearfix">
-                    @if($pay)
+                    @if($pay->balance<='0')
                         <div class="container" style="text-align: center;background-color:green">
                             <h4 style="color: white">PAID</h4>
                         </div>
@@ -25,6 +25,12 @@
                             <h4 style="color: white">UNPAID</h4>
                         </div>
                     @endif
+                    @if($pay->balance>'0')
+                    <br>
+                        <div class="container">
+                            <h4>Balance: {{$pay->balance}}</h4>
+                        </div>
+                        @endif
                     <div class="col-left">
                         <div class="clientlogo"><img src="https://cdn3.iconfinder.com/data/icons/daily-sales/512/Sale-card-address-512.png" alt="Sup" /></div>
                         <div class="clientinfo">
@@ -37,9 +43,6 @@
                             <tbody>
                             <tr>
                                 <td><span>Invoice Total</span><label id="invoice_total">Ksh {{$total}}</label></td>
-                            </tr>
-                            <tr>
-                                <td><span>Payment Method</span><label id="payment_term">Mpesa</label></td>
                             </tr>
                             <tr><td colspan="2"><span>Date</span>:<label id="note">{{$customer->date}}</label></td></tr>
                             </tbody>
@@ -54,10 +57,10 @@
                     <table class="table-main">
                         <thead>
                         <tr class="tabletitle">
+                            <th>Date</th>
                             <th>Description</th>
                             <th style="text-align: right">Invoice Category</th>
                             <th style="text-align: right">Tenant Name</th>
-                            <th style="text-align: right">Unit Price</th>
                             <th>Amount</th>
                             <th></th>
                             <th>Total</th>
@@ -65,10 +68,10 @@
                         </thead>
                         @foreach($invoices as $invoice)
                         <tr class="list-item">
+                            <td data-label="Description" class="tableitem">{{$invoice->date}}</td>
                             <td data-label="Description" class="tableitem">{{$invoice->invoice->lease->house->number}}, {{$invoice->invoice->lease->house->name}}, {{$invoice->invoice->lease->house->property->name}}</td>
                             <td data-label="Description" class="tableitem">{{$invoice->type}}</td>
                             <td data-label="Description" class="tableitem">{{$invoice->invoice->lease->customer->name}}</td>
-                            <td data-label="Unit Price" class="tableitem">{{$invoice->unit_price}}</td>
                             <td data-label="Tax Amount" class="tableitem">Ksh {{$invoice->amount}}</td>
                             <td></td>
                             <td data-label="AWT" class="tableitem">Ksh {{$invoice->amount}}</td>
