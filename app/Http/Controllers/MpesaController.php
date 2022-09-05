@@ -56,7 +56,7 @@ class MpesaController extends Controller
         $firstLast = $input['event']['resource']['sender_last_name'];
         $tranaction = Transaction::create([
             'ref'=>$input['event']['resource']['reference'],
-            'name'=>($firstName ."". $firstMiddle ."". $firstLast),
+            'name'=>$firstName ."". $firstMiddle ."". $firstLast,
             'amount'=>$input['event']['resource']['amount'],
             'payment_method'=>'Mpesa',
             'bank_type'=>'Mpesa',
