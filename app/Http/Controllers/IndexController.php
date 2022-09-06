@@ -86,6 +86,9 @@ class IndexController extends Controller
                                                     <div class="form-group">
                                                         <input type="text" class="form-control input-default" value="'.$order->status.'" name="status" placeholder="HOUSE STATUS">
                                                     </div>
+                                                     <div class="form-group">
+                                                        <input type="text" class="form-control input-default" value="'.$order->amount.'" name="amount" placeholder="HOUSE STATUS">
+                                                    </div>
 
                                                 </div>
                                             </div>
@@ -136,6 +139,7 @@ class IndexController extends Controller
         $edit = House::find($request->id);
         $edit->name = $request->input('name');
         $edit->number = $request->input('number');
+        $edit->amount = $request->input('amount');
             $edit->save();
         return redirect()->back()->with('success','HOUSE EDITED SUCCESS');
     }
