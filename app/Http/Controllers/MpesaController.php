@@ -93,7 +93,7 @@ class MpesaController extends Controller
         else{
             $getLease = Lease::find($getLease->id);
             $bal = $getLease->balance;
-            $amount = $request->input('amount');
+            $amount = $tranaction->amount;
             $currentBal = $bal-$amount;
             $updateBal = Lease::where('id',$getLease->id)->update(['balance'=>$currentBal]);
             $invoice = \App\Models\Invoice::create([
