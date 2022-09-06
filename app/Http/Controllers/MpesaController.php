@@ -102,7 +102,7 @@ class MpesaController extends Controller
             ]);
             $type = Type::create([
                 'type'=>'Overdraft',
-                'amount'=>$tranaction->amount,
+                'amount'=>$tranaction->amount*-1,
                 'invoice_id'=>$invoice->id,
                 'date'=>Carbon::now()->format('d/m/Y'),
             ]);
