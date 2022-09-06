@@ -54,7 +54,7 @@ class MpesaController extends Controller
         $firstName = $input['event']['resource']['sender_first_name'];
         $firstMiddle = $input['event']['resource']['sender_middle_name'];
         $firstLast = $input['event']['resource']['sender_last_name'];
-        $name = $firstName ."". $firstMiddle ."". $firstLast;
+        $name = $firstName .' '. $firstMiddle .' '. $firstLast;
         $tranaction = Transaction::create([
             'ref'=>$input['event']['resource']['reference'],
             'name'=>$name,
