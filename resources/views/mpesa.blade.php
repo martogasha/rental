@@ -873,6 +873,7 @@
                                     <tr>
                                         <th>Ref No</th>
                                         <th>Name</th>
+                                        <th>Phone</th>
                                         <th>Amount</th>
                                         <th>Bank</th>
                                         <th>Date</th>
@@ -884,6 +885,7 @@
                                         <tr>
                                             <td>{{$transaction->ref}}</td>
                                             <td>{{$transaction->name}}</td>
+                                            <td>{{$transaction->phone}}</td>
                                             <td>{{$transaction->amount}}</td>
                                             <td>{{$transaction->bank_type}}</td>
                                             <td>{{$transaction->date}}</td>

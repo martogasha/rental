@@ -18,6 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->string('ref')->unique()->nullable();
             $table->string('name');
             $table->integer('amount');
+            $table->string('phone');
             $table->string('payment_method')->nullable();
             $table->string('bank_type')->nullable();
             $table->string('date');
