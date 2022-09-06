@@ -59,7 +59,7 @@ class MpesaController extends Controller
             'ref'=>$input['event']['resource']['reference'],
             'name'=>$name,
             'amount'=>$input['event']['resource']['amount'],
-            'phone'=>$input['event']['resource']['amount'],
+            'phone'=>$input['event']['resource']['sender_phone_number'],
             'payment_method'=>'Mpesa',
             'bank_type'=>'Mpesa',
             'date'=>Carbon::now()->format('d/m/Y'),
