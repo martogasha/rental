@@ -26,7 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('check_four')->nullable();
             $table->string('check_five')->nullable();
             $table->string('check_six')->nullable();
-            $table->string('check_seven')->nullable();
+                $table->string('check_seven')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

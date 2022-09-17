@@ -259,7 +259,8 @@ class IndexController extends Controller
                 $total = Type::where('invoice_id',$getInv->id)->sum('amount');
                 $invoices = Type::where('invoice_id',$getInv->id)->get();
                 $payments = Payment::where('invoice_id',$getInv->id)->get();
-                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                $paying = \App\Models\Invoice::find($getInv->id);
+                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
             }
             else{
                 $invoice = \App\Models\Invoice::create([
@@ -301,7 +302,8 @@ class IndexController extends Controller
                     $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
                     $invoices = Type::where('invoice_id',$getInvoice->id)->get();
                     $payments = Payment::where('invoice_id',$getInvoice->id)->get();
-                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                    $paying = \App\Models\Invoice::find($getInvoice->id);
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
 
                 }
                 else{
@@ -310,7 +312,8 @@ class IndexController extends Controller
                     $total = Type::where('id',$type->id)->sum('amount');
                     $invoices = Type::where('invoice_id',$invoice->id)->get();
                     $payments = Payment::where('invoice_id',$invoice->id)->get();
-                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                    $paying = \App\Models\Invoice::find($invoice->id);
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
                 }
 
             }
@@ -333,7 +336,8 @@ class IndexController extends Controller
                 $total = Type::where('invoice_id',$getInv->id)->sum('amount');
                 $invoices = Type::where('invoice_id',$getInv->id)->get();
                 $payments = Payment::where('invoice_id',$getInv->id)->get();
-                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                $paying = \App\Models\Invoice::find($getInv->id);
+                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
             }
             else{
                 $invoice = \App\Models\Invoice::create([
@@ -375,7 +379,8 @@ class IndexController extends Controller
                     $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
                     $invoices = Type::where('invoice_id',$getInvoice->id)->get();
                     $payments = Payment::where('invoice_id',$getInvoice->id)->get();
-                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                    $paying = \App\Models\Invoice::find($getInvoice->id);
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
 
                 }
                 else{
@@ -384,7 +389,8 @@ class IndexController extends Controller
                     $total = Type::where('id',$type->id)->sum('amount');
                     $invoices = Type::where('invoice_id',$invoice->id)->get();
                     $payments = Payment::where('invoice_id',$invoice->id)->get();
-                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                    $paying = \App\Models\Invoice::find($invoice->id);
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
                 }
 
             }
@@ -406,7 +412,8 @@ class IndexController extends Controller
                 $total = Type::where('invoice_id',$getInv->id)->sum('amount');
                 $invoices = Type::where('invoice_id',$getInv->id)->get();
                 $payments = Payment::where('invoice_id',$getInv->id)->get();
-                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                $paying = \App\Models\Invoice::find($getInv->id);
+                Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
             }
             else{
                 $invoice = \App\Models\Invoice::create([
@@ -448,7 +455,8 @@ class IndexController extends Controller
                     $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
                     $invoices = Type::where('invoice_id',$getInvoice->id)->get();
                     $payments = Payment::where('invoice_id',$getInvoice->id)->get();
-                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                    $paying = \App\Models\Invoice::find($getInvoice->id);
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
 
                 }
                 else{
@@ -457,7 +465,8 @@ class IndexController extends Controller
                     $total = Type::where('id',$type->id)->sum('amount');
                     $invoices = Type::where('invoice_id',$invoice->id)->get();
                     $payments = Payment::where('invoice_id',$invoice->id)->get();
-                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+                    $paying = \App\Models\Invoice::find($invoice->id);
+                    Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
                 }
 
             }
