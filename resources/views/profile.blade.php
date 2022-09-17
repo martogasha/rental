@@ -1,11 +1,10 @@
 @include('header')
-<title>Bank Transactions - Rental</title>
-
+<title>{{\Illuminate\Support\Facades\Auth::user()->name}} Profile - Rental</title>
 <body>
 
 <!--*******************
-        Preloader start
-    ********************-->
+    Preloader start
+********************-->
 <div id="preloader">
     <div class="sk-three-bounce">
         <div class="sk-child sk-bounce1"></div>
@@ -14,17 +13,17 @@
     </div>
 </div>
 <!--*******************
-        Preloader end
-    ********************-->
+    Preloader end
+********************-->
 
 <!--**********************************
-        Main wrapper start
-    ***********************************-->
+    Main wrapper start
+***********************************-->
 <div id="main-wrapper">
 
     <!--**********************************
-            Nav header start
-        ***********************************-->
+        Nav header start
+    ***********************************-->
     <div class="nav-header">
         <a href="index.html" class="brand-logo">
             <img class="logo-abbr" src="public/images/logo.png" alt="">
@@ -40,12 +39,12 @@
         </div>
     </div>
     <!--**********************************
-            Nav header end
-        ***********************************-->
+        Nav header end
+    ***********************************-->
 
     <!--**********************************
-            Header start
-        ***********************************-->
+        Header start
+    ***********************************-->
 
     <div class="chatbox">
         <div class="chatbox-close"></div>
@@ -543,12 +542,12 @@
         </div>
     </div>
     <!--**********************************
-            Chat box End
-        ***********************************-->
+        Chat box End
+    ***********************************-->
 
     <!--**********************************
-            Header start
-        ***********************************-->
+        Header start
+    ***********************************-->
     <div class="header">
         <div class="header-content">
             <nav class="navbar navbar-expand">
@@ -725,171 +724,83 @@
                             </div>
                         </li>
 
-        @include('menu')
-    </div>        <!--**********************************
+                    @include('menu')
+                </div>        <!--**********************************
             Sidebar end
         ***********************************-->
 
 
 
-    <!--**********************************
-            Content body start
-        ***********************************-->
-    <div class="content-body">
-        <!-- row -->
-
-        <div class="container-fluid">
-            <div class="page-titles">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{url('Dashboard')}}">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="#">Bank Transactions</a></li>
-                </ol>
-            </div>
-            <!-- row -->
-
-
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Bank Transactions</h4>
-                            <!-- Modal -->
-                            <div class="modal fade" id="basicModal">
-                                <div class="modal-dialog" role="document">
-                                    <form action="{{url('storeProperty')}}" method="post">
-                                        @csrf
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Add Bank Transaction</h5>
-                                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="basic-form">
-
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="ref_no" placeholder="REFERENCE NUMBER">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="name" placeholder="FULL NAME">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="amount" placeholder="AMOUNT">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <select class="form-control" name="bank">
-                                                            <option value="Bank">BANK</option>
-                                                            <option value="Cheque">CHEQUE</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <select class="form-control" name="bank">
-                                                            <option value="EQUITY BANK">SELECT </option>
-                                                            <option value="KCB BANK">KCB BANK</option>
-                                                            <option value="FAMILY BANK">FAMILY BANK</option>
-                                                            <option value="BACLAYS BANK">BACLAYS BANK</option>
-                                                            <option value="CORPARATIVE BANK">CORPARATIVE BANK</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="editModal">
-                                <div class="modal-dialog" role="document">
-                                    <form action="{{url('eProperty')}}" method="post">
-                                        @csrf
-                                        <div class="modal-content" id="basic1">
-                                        </div>
-
-                                    </form>
-                                </div>
+                <!--**********************************
+                    Content body start
+                ***********************************-->
+                <div class="content-body">
+                    <div class="container-fluid">
+                        <div class="form-head d-md-flex mb-sm-4 mb-3 align-items-start">
+                            <div class="mr-auto  d-lg-block">
+                                <h2 class="text-black font-w600">{{\Illuminate\Support\Facades\Auth::user()->name}} Profile</h2>
                             </div>
                         </div>
-                        @include('flash-message')
-                        <div class="card-body">
-
-                            <div class="table-responsive">
-                                <table id="example" class="display min-w850">
-                                    <thead>
-                                    <tr>
-                                        <th>Ref No</th>
-                                        <th>Name</th>
-                                        <th>Amount</th>
-                                        <th>Payment Method</th>
-                                        <th>Bank</th>
-                                        <th>Date</th>
-
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($transactions as $transaction)
-                                        <tr>
-                                            <td>{{$transaction->ref}}</td>
-                                            <td>{{$transaction->name}}</td>
-                                            <td>{{$transaction->amount}}</td>
-                                            <td>{{$transaction->payment_method}}</td>
-                                            <td>{{$transaction->bank_type}}</td>
-                                            <td>{{$transaction->date}}</td>
-                                        </tr>
-                                    @endforeach
-                                </table>
+                        <form action="{{url('prof')}}" method="post">
+                            @csrf
+                            <input type="hidden" name="user_id" value="{{\Illuminate\Support\Facades\Auth::id()}}">
+                            <div class="basic-form">
+                                <div class="form-group">
+                                    <label>User Name</label>
+                                    <input type="text" class="form-control input-default" name="name" value="{{\Illuminate\Support\Facades\Auth::user()->name}}">
+                                </div>
+                                <div class="form-group">
+                                    <label>User Email</label>
+                                    <input type="email" class="form-control input-default" name="email" value="{{\Illuminate\Support\Facades\Auth::user()->email}}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" class="form-control input-default" name="password">
+                                </div>
+                                <button class="btn btn-primary">Update</button>
                             </div>
+                        </form>
+
                         </div>
-                    </div>
+
                 </div>
-            </div>
-        </div>
-
-    </div>
-    <!--**********************************
-            Content body end
-        ***********************************-->
+                <!--**********************************
+                    Content body end
+                ***********************************-->
 
 
-    <!--**********************************
-            Footer start
-        ***********************************-->
-
-    <!--**********************************
-            Main wrapper end
-        ***********************************-->
-
-    <!--**********************************
-            Scripts
-        ***********************************-->
-    @include('footer')
+                <!--**********************************
+                    Footer start
+                ***********************************-->
 
 
-    <!--		<script src="https://makaanlelo.com/tf_products_007/omah/laravel/demo/js/custom.min.js" type="text/javascript"></script>
-			<script src="https://makaanlelo.com/tf_products_007/omah/laravel/demo/js/deznav-init.js" type="text/javascript"></script> -->
-    <!--
-         --></body>
-<script>
-    $(document).on('click','.view',function () {
-        $value = $(this).attr('id');
-        $.ajax({
-            type:"get",
-            url:"{{url('editProperty')}}",
-            data:{'order':$value},
-            success:function (data) {
-                $('#editModal').modal('show');
-                $('#basic1').html(data);
-            },
-            error:function (error) {
-                console.log(error)
-                alert('error')
+                <!--**********************************
+                    Footer end
+                ***********************************-->
 
-            }
+                <!--**********************************
+                   Support ticket button start
+                ***********************************-->
 
-        });
-    });
-</script>
-<!-- Mirrored from makaanlelo.com/tf_products_007/omah/laravel/demo/table-datatable-basic by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 26 Aug 2022 15:27:35 GMT -->
+                <!--**********************************
+                   Support ticket button end
+                ***********************************-->
+
+
+                <!--**********************************
+                    Main wrapper end
+                ***********************************-->
+
+                <!--**********************************
+                    Scripts
+                ***********************************-->
+                @include('footer')
+
+
+                <!--		<script src="https://makaanlelo.com/tf_products_007/omah/laravel/demo/js/custom.min.js" type="text/javascript"></script>
+        <script src="https://makaanlelo.com/tf_products_007/omah/laravel/demo/js/deznav-init.js" type="text/javascript"></script> -->
+                <!--
+                     --></body>
+
+<!-- Mirrored from makaanlelo.com/tf_products_007/omah/laravel/demo/index by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 26 Aug 2022 15:21:55 GMT -->
 </html>

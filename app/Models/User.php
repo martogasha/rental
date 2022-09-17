@@ -21,6 +21,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'check_one',
+        'check_two',
+        'check_three',
+        'check_four',
+        'check_five',
+        'check_six',
+        'check_seven',
     ];
 
     /**

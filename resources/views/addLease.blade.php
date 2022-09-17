@@ -1,4 +1,5 @@
 @include('header')
+<title>Add Lease for {{$prop->name}} ({{$prop->number}}) - Rentals</title>
 
 <body>
 
@@ -828,7 +829,7 @@
         <div class="container-fluid">
             <div class="page-titles">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{url('/')}}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{url('Dashboard')}}">Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{{url('lease')}}">Leases</a></li>
                     <li class="breadcrumb-item active"><a href="#">Add Lease</a></li>
                 </ol>

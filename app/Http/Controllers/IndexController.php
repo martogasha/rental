@@ -10,14 +10,25 @@ use App\Models\Payment;
 use App\Models\Property;
 use App\Models\Transaction;
 use App\Models\Type;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class IndexController extends Controller
 {
     public function index(){
-        return view('welcome');
+        if (Auth::check()){
+            return view('welcome');
+
+        }
+        else{
+            return redirect(url('/'));
+        }
+    }
+    public function profile(){
+        return view('profile');
     }
     public function property(){
         $props = Property::latest('id')->get();
@@ -167,38 +178,57 @@ class IndexController extends Controller
         return redirect()->back()->with('success','HOUSE ADDED SUCCESS');
     }
     public function storeLease(Request $request){
-        $customer = Customer::create([
-            'name'=>$request->input('customer_name'),
-            'phone'=>$request->input('customer_phone'),
-            'email'=>$request->input('customer_email'),
-        ]);
-        $lease = Lease::create([
-            'customer_id'=>$customer->id,
-            'house_id'=>$request->house_id,
-            'balance'=>$request->input('amount'),
-        ]);
-        $invoice = \App\Models\Invoice::create([
-            'lease_id'=>$lease->id,
-            'date'=>Carbon::now()->format('d/m/Y'),
-        ]);
-        $type = Type::create([
-           'type'=>'Lease Agreement',
-           'amount'=>$request->input('amount'),
-           'invoice_id'=>$invoice->id,
-            'date'=>Carbon::now()->format('d/m/Y'),
-        ]);
-        $customer = \App\Models\Invoice::find($invoice->id);
-        $pay = Lease::where('id',$invoice->lease_id)->first();
-        $total = Type::where('invoice_id',$invoice->id)->sum('amount');
-        $invoices = Type::where('invoice_id',$invoice->id)->get();
-        $payments = Payment::where('invoice_id',$invoice->id)->get();
-        Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
-        $updateHouse = House::where('id',$request->house_id)->update(['status'=>('OCCUPIED')]);
+        $getPhone = Customer::where('phone',$request->input('customer_phone'))->orWhere('email',$request->input('customer_email'))->first();
+        if ($getPhone){
+            if ($getPhone->phone==$request->input('customer_phone')){
+                return redirect()->back()->with('error','DUPLICATE PHONE NUMBER');
+            }
+            elseif ($getPhone->email==$request->input('customer_email')){
+                return redirect()->back()->with('error','DUPLICATE EMAIL ADDRESS');
 
-        return redirect(url('lease'))->with('success','LEASE CREATED SUCCESS');
+            }
+            else{
+
+            }
+        }
+
+        else{
+            $customer = Customer::create([
+                'name'=>$request->input('customer_name'),
+                'phone'=>$request->input('customer_phone'),
+                'email'=>$request->input('customer_email'),
+            ]);
+            $lease = Lease::create([
+                'customer_id'=>$customer->id,
+                'house_id'=>$request->house_id,
+                'balance'=>$request->input('amount'),
+            ]);
+            $invoice = \App\Models\Invoice::create([
+                'lease_id'=>$lease->id,
+                'date'=>Carbon::now()->format('d/m/Y'),
+            ]);
+            $type = Type::create([
+                'type'=>'Lease Agreement',
+                'amount'=>$request->input('amount'),
+                'invoice_id'=>$invoice->id,
+                'date'=>Carbon::now()->format('d/m/Y'),
+            ]);
+            $customer = \App\Models\Invoice::find($invoice->id);
+            $pay = Lease::where('id',$invoice->lease_id)->first();
+            $total = Type::where('invoice_id',$invoice->id)->sum('amount');
+            $invoices = Type::where('invoice_id',$invoice->id)->get();
+            $payments = Payment::where('invoice_id',$invoice->id)->get();
+            $paying = \App\Models\Invoice::find($invoice->id);
+            Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
+            $updateHouse = House::where('id',$request->house_id)->update(['status'=>('OCCUPIED')]);
+            $updateLeaseId = House::where('id',$request->house_id)->update(['lease_id'=>$lease->id]);
+
+            return redirect(url('lease'))->with('success','LEASE CREATED SUCCESS');
+        }
+
     }
     public function lease(){
-        $props = Lease::all();
+        $props = Lease::where('status','0')->get();
         return view('lease',[
             'props'=>$props
         ]);
@@ -241,7 +271,7 @@ class IndexController extends Controller
                 $currentBal = $bal + $request->input('amount');
                 $type = Type::create([
                     'type'=>'Rent',
-                    'amount'=>$currentBal*-1,
+                    'amount'=>$getBal->house->amount,
                     'invoice_id'=>$invoice->id,
                     'date'=>Carbon::now()->format('d/m/Y'),
                 ]);
@@ -466,7 +496,8 @@ class IndexController extends Controller
             $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
             $invoices = Type::where('invoice_id',$getInvoice->id)->get();
             $payments = Payment::where('invoice_id',$getInvoice->id)->get();
-            Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+            $paying = \App\Models\Invoice::find($getInvoice->id);
+            Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
             return redirect()->back()->with('success','TRANSACTION SAVED SUCCESSFULLY');
         }
         else{
@@ -496,11 +527,51 @@ class IndexController extends Controller
             $total = Type::where('invoice_id',$getInv->id)->sum('amount');
             $invoices = Type::where('invoice_id',$getInv->id)->get();
             $payments = Payment::where('invoice_id',$getInv->id)->get();
-            Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments));
+            $paying = \App\Models\Invoice::find($getInv->id);
+            Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
             return redirect()->back()->with('success','TRANSACTION SAVED SUCCESSFULLY');
 
 
         }
 
+    }
+    public function terminate(Request $request){
+        $output = "";
+        $getLease = Lease::find($request->order);
+        $getBalance = $getLease->balance;
+        $output = '
+                                                        <div class="modal-header">
+                                                    <h5 class="modal-title">Terminate Lease for <b style="color: red">'.$getLease->customer->name.'</b></h5>
+                                                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                                    </button>
+                                                </div>
+                                                <input type="hidden" value="'.$getLease->id.'" name="leaseId">
+                                                <div class="card-body">
+                                                    <p>ARE YOU SURE TERMINATION FOR <b>'.$getLease->customer->name.'</b></p>
+                                                    <p>BALANCE: <b>'.$getBalance.'</b></p>
+                                                    </div>
+                                                </div>
+        ';
+        return response($output);
+
+    }
+    public function terminateLease(Request $request){
+        $updateLease = Lease::where('id',$request->leaseId)->update(['status'=>'1']);
+        $updateHouse = House::where('lease_id',$request->leaseId)->update(['status'=>'VACANT']);
+        $updateLeaseId = House::where('lease_id',$request->leaseId)->update(['lease_id'=>null]);
+        return redirect()->back()->with('success','LEASE TERMINATED SUCCESS');
+
+    }
+    public function terminated(){
+        $props = Lease::where('status','1')->get();
+        return view('terminated',[
+            'props'=>$props
+        ]);
+    }
+    public function role(){
+        $users = User::all();
+        return view('role',[
+            'users'=>$users
+        ]);
     }
 }

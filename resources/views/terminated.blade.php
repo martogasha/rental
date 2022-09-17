@@ -1,6 +1,5 @@
 @include('header')
-<title>Bank Transactions - Rental</title>
-
+<title>Terminated Lease - Rentals</title>
 <body>
 
 <!--*******************
@@ -724,8 +723,7 @@
                                 </div>
                             </div>
                         </li>
-
-        @include('menu')
+@include('menu')
     </div>        <!--**********************************
             Sidebar end
         ***********************************-->
@@ -742,7 +740,7 @@
             <div class="page-titles">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{url('Dashboard')}}">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="#">Bank Transactions</a></li>
+                    <li class="breadcrumb-item"><a href="{{url('lease')}}">Terminated Leases</a></li>
                 </ol>
             </div>
             <!-- row -->
@@ -752,7 +750,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Bank Transactions</h4>
+                            <h4 class="card-title">TERMINATED LEASES</h4>
                             <!-- Modal -->
                             <div class="modal fade" id="basicModal">
                                 <div class="modal-dialog" role="document">
@@ -760,7 +758,7 @@
                                         @csrf
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Add Bank Transaction</h5>
+                                                <h5 class="modal-title">Add Lease</h5>
                                                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
                                                 </button>
                                             </div>
@@ -768,27 +766,18 @@
                                                 <div class="basic-form">
 
                                                     <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="ref_no" placeholder="REFERENCE NUMBER">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="name" placeholder="FULL NAME">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="amount" placeholder="AMOUNT">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <select class="form-control" name="bank">
-                                                            <option value="Bank">BANK</option>
-                                                            <option value="Cheque">CHEQUE</option>
+                                                        <label>Select Property</label>
+                                                        <select class="form-control" id="sel1">
+                                                            @foreach($props as $prop)
+                                                            <option value="{{$prop->id}}">{{$prop->name}}</option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                     <div class="form-group">
-                                                        <select class="form-control" name="bank">
-                                                            <option value="EQUITY BANK">SELECT </option>
-                                                            <option value="KCB BANK">KCB BANK</option>
-                                                            <option value="FAMILY BANK">FAMILY BANK</option>
-                                                            <option value="BACLAYS BANK">BACLAYS BANK</option>
-                                                            <option value="CORPARATIVE BANK">CORPARATIVE BANK</option>
+                                                        <select class="form-control">
+                                                            <option>klsdjf</option>
+                                                            <div id="house1"></div>
+                                                            <option>asdkm</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -814,32 +803,63 @@
                         </div>
                         @include('flash-message')
                         <div class="card-body">
-
                             <div class="table-responsive">
                                 <table id="example" class="display min-w850">
                                     <thead>
                                     <tr>
-                                        <th>Ref No</th>
-                                        <th>Name</th>
-                                        <th>Amount</th>
-                                        <th>Payment Method</th>
-                                        <th>Bank</th>
-                                        <th>Date</th>
+                                        <th>Property</th>
+                                        <th>House Name</th>
+                                        <th>House Number</th>
+                                        <th>Customer Name</th>
+                                        <th>Balance</th>
+                                        <th>Action</th>
 
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($transactions as $transaction)
+                                    @foreach($props as $prop)
                                         <tr>
-                                            <td>{{$transaction->ref}}</td>
-                                            <td>{{$transaction->name}}</td>
-                                            <td>{{$transaction->amount}}</td>
-                                            <td>{{$transaction->payment_method}}</td>
-                                            <td>{{$transaction->bank_type}}</td>
-                                            <td>{{$transaction->date}}</td>
+                                            <td>{{$prop->house->property->name}}</td>
+                                            <td>{{$prop->house->name}}</td>
+                                            <td>{{$prop->house->number}}</td>
+                                            <td>{{$prop->customer->name}}</td>
+                                            @if($prop->balance>0)
+                                                <td style="color:red">{{$prop->balance}}</td>
+                                            @else
+                                                <td style="color:green">{{$prop->balance}}</td>
+
+                                            @endif
+                                            <td>
+                                                <a href="{{url('customer',$prop->id)}}"><button class="btn btn-danger" style="width: 150px;height: 55px">Unpaid
+
+                                                        @if(\App\Models\Invoice::where('lease_id',$prop->id)->where('status','0')->count()==0)
+                                                        @else
+                                                            <span class="badge badge-light">{{\App\Models\Invoice::where('lease_id',$prop->id)->where('status','0')->count()}}</span>
+                                                        @endif
+                                                    </button>
+                                                </a>
+                                            <a href="{{url('customerPaid',$prop->id)}}"><button class="btn btn-info">Paid</button></a>
+
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </table>
+                                <div class="modal fade" id="terminateModal">
+                                    <div class="modal-dialog" role="document">
+                                        <form action="{{url('terminateLease')}}" method="post">
+                                            @csrf
+                                            <div class="modal-content">
+                                                <div id="basicT">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Confirm</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -848,6 +868,7 @@
         </div>
 
     </div>
+
     <!--**********************************
             Content body end
         ***********************************-->
@@ -872,6 +893,22 @@
     <!--
          --></body>
 <script>
+    $('#sel1').on('change',function () {
+        $value = $(this).val();
+        $.ajax({
+            type:"get",
+            url:"{{url('viewHouses')}}",
+            data:{'order':$value},
+            success:function (data) {
+                $('#house1').html(data);
+            },
+            error:function (error) {
+                console.log(error)
+                alert('error')
+
+            }
+
+        });    });
     $(document).on('click','.view',function () {
         $value = $(this).attr('id');
         $.ajax({
@@ -881,6 +918,25 @@
             success:function (data) {
                 $('#editModal').modal('show');
                 $('#basic1').html(data);
+
+            },
+            error:function (error) {
+                console.log(error)
+                alert('error')
+
+            }
+
+        });
+    });
+    $(document).on('click','.terminate',function () {
+        $value = $(this).attr('id');
+        $.ajax({
+            type:"get",
+            url:"{{url('terminate')}}",
+            data:{'order':$value},
+            success:function (data) {
+                $('#terminateModal').modal('show');
+                $('#basicT').html(data);
             },
             error:function (error) {
                 console.log(error)

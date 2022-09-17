@@ -15,19 +15,21 @@ class Invoice extends Mailable
     public $total;
     public $invoices;
     public $payments;
+    public $paying;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($customer,$pay,$total,$invoices,$payments)
+    public function __construct($customer,$pay,$total,$invoices,$payments,$paying)
     {
         $this->customer=$customer;
         $this->pay=$pay;
         $this->total=$total;
         $this->invoices=$invoices;
         $this->payments=$payments;
+        $this->paying=$paying;
 
     }
 

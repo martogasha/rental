@@ -5,7 +5,7 @@
 
             <div id="invoice-top">
                 <div class="title">
-                    <h1>Invoice #<span class="invoiceVal invoice_num">023</span></h1>
+                    <h1>Invoice #<span class="invoiceVal invoice_num">0{{$paying->id}}</span></h1>
                 </div><!--End Title-->
             </div><!--End InvoiceTop-->
 

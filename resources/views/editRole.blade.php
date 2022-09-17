@@ -1,6 +1,5 @@
 @include('header')
-<title>Bank Transactions - Rental</title>
-
+<title>Edit {{$user->name}} - Rentals</title>
 <body>
 
 <!--*******************
@@ -27,9 +26,9 @@
         ***********************************-->
     <div class="nav-header">
         <a href="index.html" class="brand-logo">
-            <img class="logo-abbr" src="public/images/logo.png" alt="">
-            <img class="logo-compact" src="public/images/logo-text.png" alt="">
-            <img class="brand-title" src="public/images/logo-text.png" alt="">
+            <img class="logo-abbr" src="{{asset('public/images/logo.png')}}" alt="">
+            <img class="logo-compact" src="{{asset('public/images/logo-text.png')}}" alt="">
+            <img class="brand-title" src="{{asset('public/images/logo-text.png')}}" alt="">
 
         </a>
 
@@ -725,7 +724,111 @@
                             </div>
                         </li>
 
-        @include('menu')
+                        <li class="nav-item dropdown header-profile">
+                            <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                <div class="header-info">
+                                    <span class="text-black">{{\Illuminate\Support\Facades\Auth::user()->name}}</span>
+                                    @if(\Illuminate\Support\Facades\Auth::user()->role==0)
+                                        <p class="fs-12 mb-0">Super Admin</p>
+
+                                    @else
+                                        <p class="fs-12 mb-0">Admin</p>
+
+                                    @endif
+                                </div>
+                                <img  src="{{asset('public/images/profile/17.jpg')}}" width="20" alt=""/>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a href="{{url('profile')}}" class="dropdown-item ai-icon">
+                                    <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    <span class="ml-2">Profile </span>
+                                </a>
+                                <form action="{{route('logout')}}" method="post" id="logout">
+                                    @csrf
+                                    <a href="javascript:document.getElementById('logout').submit();" class="dropdown-item ai-icon">
+                                        <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                        <span class="ml-2">Logout </span>
+                                    </a>
+                                </form>
+
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!--**********************************
+        Header end ti-comment-alt
+    ***********************************-->
+
+    <!--**********************************
+        Sidebar start
+    ***********************************-->
+    <div class="deznav">
+        <div class="deznav-scroll">
+            <ul class="metismenu" id="menu">
+                @if(\Illuminate\Support\Facades\Auth::user()->check_one=='dash')
+                    <li><a class="has-arrow ai-icon" href="{{url('Dashboard')}}" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </li>
+                @endif
+                @if(\Illuminate\Support\Facades\Auth::user()->check_two=='property')
+                    <li><a class="has-arrow ai-icon" href="{{url('property')}}" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i>
+                            <span class="nav-text">Properties</span>
+                        </a>
+                    </li>
+                @endif
+                @if(\Illuminate\Support\Facades\Auth::user()->check_three=='lease')
+                    <li><a class="has-arrow ai-icon" href="{{url('lease')}}" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i>
+                            <span class="nav-text">Customer Lease</span>
+                        </a>
+                    </li>
+                @endif
+                @if(\Illuminate\Support\Facades\Auth::user()->check_four=='transaction')
+
+                    <li><a class="has-arrow ai-icon" href="{{url('mpesaTransaction')}}" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i>
+                            <span class="nav-text">Mpesa</span>
+                        </a>
+                    </li>
+                @endif
+                @if(\Illuminate\Support\Facades\Auth::user()->check_four=='transaction')
+
+                    <li><a class="has-arrow ai-icon" href="{{url('bankTransaction')}}" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i>
+                            <span class="nav-text">Bank</span>
+                        </a>
+                    </li>
+                @endif
+                @if(\Illuminate\Support\Facades\Auth::user()->check_six=='role')
+
+                    <li style="background-color:lightblue"><a class="has-arrow ai-icon" href="{{url('role')}}" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i>
+                            <span class="nav-text">User Roles</span>
+                        </a>
+                    </li>
+                @endif
+                @if(\Illuminate\Support\Facades\Auth::user()->check_seven=='terminated')
+                    <li><a class="has-arrow ai-icon" href="{{url('terminated')}}" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i>
+                            <span class="nav-text">Terminated Lease</span>
+                        </a>
+                    </li>
+                @endif
+
+            </ul>
+
+            <div class="copyright">
+                <p>©All Rights Reserved</p>
+                <p>by Icons Tech</p>
+            </div>
+        </div>
     </div>        <!--**********************************
             Sidebar end
         ***********************************-->
@@ -742,7 +845,8 @@
             <div class="page-titles">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{url('Dashboard')}}">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="#">Bank Transactions</a></li>
+                    <li class="breadcrumb-item"><a href="{{url('role')}}">User Role</a></li>
+                    <li class="breadcrumb-item active"><a href="#">Edit {{$user->name}}</a></li>
                 </ol>
             </div>
             <!-- row -->
@@ -752,95 +856,96 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Bank Transactions</h4>
-                            <!-- Modal -->
-                            <div class="modal fade" id="basicModal">
-                                <div class="modal-dialog" role="document">
-                                    <form action="{{url('storeProperty')}}" method="post">
-                                        @csrf
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Add Bank Transaction</h5>
-                                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="basic-form">
-
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="ref_no" placeholder="REFERENCE NUMBER">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="name" placeholder="FULL NAME">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="amount" placeholder="AMOUNT">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <select class="form-control" name="bank">
-                                                            <option value="Bank">BANK</option>
-                                                            <option value="Cheque">CHEQUE</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <select class="form-control" name="bank">
-                                                            <option value="EQUITY BANK">SELECT </option>
-                                                            <option value="KCB BANK">KCB BANK</option>
-                                                            <option value="FAMILY BANK">FAMILY BANK</option>
-                                                            <option value="BACLAYS BANK">BACLAYS BANK</option>
-                                                            <option value="CORPARATIVE BANK">CORPARATIVE BANK</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="editModal">
-                                <div class="modal-dialog" role="document">
-                                    <form action="{{url('eProperty')}}" method="post">
-                                        @csrf
-                                        <div class="modal-content" id="basic1">
-                                        </div>
-
-                                    </form>
-                                </div>
-                            </div>
+                            <h4 class="card-title">Edit {{$user->name}}</h4><!-- Modal -->
                         </div>
                         @include('flash-message')
                         <div class="card-body">
+                            <form action="{{url('eUser')}}" method="post">
+                                @csrf
+                                <input type="hidden" name="user_id" value="{{$user->id}}">
+                                        <div class="basic-form">
 
-                            <div class="table-responsive">
-                                <table id="example" class="display min-w850">
-                                    <thead>
-                                    <tr>
-                                        <th>Ref No</th>
-                                        <th>Name</th>
-                                        <th>Amount</th>
-                                        <th>Payment Method</th>
-                                        <th>Bank</th>
-                                        <th>Date</th>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control input-default" name="name" value="{{$user->name}}">
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="email" class="form-control input-default" name="email" value="{{$user->email}}">
+                                            </div>
+                                            <div class="form-group">
+                                                <select class="form-control" name="role">
+                                                    @if($user->role==1)
+                                                        <option value="{{$user->role}}">Admin</option>
+                                                        <option value="0">Super Admin</option>
+                                                    @else
+                                                        <option value="1">Admin</option>
+                                                        <option value="{{$user->role}}">Super Admin</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                            <div class="col-6 col-sm-4">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    @if($user->check_one==null)
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox1" name="customCheckBox1" value="dash">
+                                                    @else
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox1" name="customCheckBox1" value="dash" checked>
+                                                    @endif
+                                                    <label class="custom-control-label" for="customCheckBox1">Dashboard</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-sm-4">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    @if($user->check_two==null)
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox2" name="customCheckBox2" value="property">
+                                                    @else
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox2" name="customCheckBox2" value="property" checked>
+                                                    @endif
+                                                    <label class="custom-control-label" for="customCheckBox2">Properties</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-sm-4">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    @if($user->check_three==null)
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox3" name="customCheckBox3" value="lease">
+                                                    @else
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox3" name="customCheckBox3" value="lease" checked>
+                                                    @endif
+                                                    <label class="custom-control-label" for="customCheckBox3">Customer Lease</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-sm-4">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    @if($user->check_four==null)
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox4" name="customCheckBox4" value="transaction">
+                                                    @else
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox4" name="customCheckBox4" value="transaction" checked>
+                                                    @endif
+                                                    <label class="custom-control-label" for="customCheckBox4">Transactions</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-sm-4">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    @if($user->check_six==null)
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox6" name="customCheckBox6" value="role">
+                                                    @else
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox6" name="customCheckBox6" value="role" checked>
+                                                    @endif
+                                                    <label class="custom-control-label" for="customCheckBox6">User Roles</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-sm-4">
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    @if($user->check_seven==null)
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox7" name="customCheckBox7" value="terminated">
+                                                    @else
+                                                        <input type="checkbox" class="custom-control-input" id="customCheckBox7" name="customCheckBox7" value="terminated" checked>
+                                                    @endif
+                                                    <label class="custom-control-label" for="customCheckBox7">Terminated Leases</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </form>
 
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($transactions as $transaction)
-                                        <tr>
-                                            <td>{{$transaction->ref}}</td>
-                                            <td>{{$transaction->name}}</td>
-                                            <td>{{$transaction->amount}}</td>
-                                            <td>{{$transaction->payment_method}}</td>
-                                            <td>{{$transaction->bank_type}}</td>
-                                            <td>{{$transaction->date}}</td>
-                                        </tr>
-                                    @endforeach
-                                </table>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -876,7 +981,7 @@
         $value = $(this).attr('id');
         $.ajax({
             type:"get",
-            url:"{{url('editProperty')}}",
+            url:"{{url('editHouse')}}",
             data:{'order':$value},
             success:function (data) {
                 $('#editModal').modal('show');

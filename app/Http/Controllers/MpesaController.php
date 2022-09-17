@@ -88,7 +88,8 @@ class MpesaController extends Controller
             $total = Type::where('invoice_id',$getInvoice->id)->sum('amount');
             $invoices = Type::where('invoice_id',$getInvoice->id)->get();
             $payments = Payment::where('invoice_id',$getInvoice->id)->get();
-            Mail::to($customer->lease->customer->email)->send(new \App\Mail\Invoice($customer,$pay,$total,$invoices,$payments));
+            $paying = Invoice::find($getInvoice->id);
+            Mail::to($customer->lease->customer->email)->send(new \App\Mail\Invoice($customer,$pay,$total,$invoices,$payments,$paying));
         }
         else{
             $getLease = Lease::find($getLease->id);
@@ -117,7 +118,8 @@ class MpesaController extends Controller
             $total = Type::where('invoice_id',$getInv->id)->sum('amount');
             $invoices = Type::where('invoice_id',$getInv->id)->get();
             $payments = Payment::where('invoice_id',$getInv->id)->get();
-            Mail::to($customer->lease->customer->email)->send(new \App\Mail\Invoice($customer,$pay,$total,$invoices,$payments));
+            $paying = Invoice::find($getInv->id);
+            Mail::to($customer->lease->customer->email)->send(new \App\Mail\Invoice($customer,$pay,$total,$invoices,$payments,$paying));
         }
     }
     public function authenticate(){
@@ -180,6 +182,7 @@ class MpesaController extends Controller
             'total'=>$total,
             'customer'=>$customer,
             'payments'=>$payments,
+            'paying'=>$paying,
             'pay'=>$pay
         ]);
     }
@@ -188,12 +191,14 @@ class MpesaController extends Controller
         $total = Type::where('invoice_id',$id)->sum('amount');
         $customer = Invoice::where('id',$id)->where('status',1)->first();
         $payments = Payment::where('invoice_id',$id)->get();
+        $paying = Invoice::find($id);
         $pay = Payment::where('invoice_id',$customer->id)->first();
         return view('invoice',[
             'invoices'=>$invoices,
             'total'=>$total,
             'customer'=>$customer,
             'payments'=>$payments,
+            'paying'=>$paying,
             'pay'=>$pay
         ]);
     }

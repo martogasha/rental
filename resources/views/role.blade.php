@@ -1,6 +1,5 @@
 @include('header')
-<title>Bank Transactions - Rental</title>
-
+<title>User Role - Rental</title>
 <body>
 
 <!--*******************
@@ -725,7 +724,7 @@
                             </div>
                         </li>
 
-        @include('menu')
+@include('menu')
     </div>        <!--**********************************
             Sidebar end
         ***********************************-->
@@ -742,7 +741,7 @@
             <div class="page-titles">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{url('Dashboard')}}">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="#">Bank Transactions</a></li>
+                    <li class="breadcrumb-item active"><a href="#">Users</a></li>
                 </ol>
             </div>
             <!-- row -->
@@ -752,52 +751,77 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Bank Transactions</h4>
+                            <h4 class="card-title">USERS</h4>
+                            <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#basicModal">Add User</button>
                             <!-- Modal -->
                             <div class="modal fade" id="basicModal">
                                 <div class="modal-dialog" role="document">
-                                    <form action="{{url('storeProperty')}}" method="post">
+                                    <form action="{{url('addUser')}}" method="post">
                                         @csrf
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Add Bank Transaction</h5>
-                                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
-                                                </button>
-                                            </div>
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Add User</h5>
+                                            <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                            </button>
+                                        </div>
                                             <div class="card-body">
                                                 <div class="basic-form">
 
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control input-default" name="name" placeholder="NAME">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input type="email" class="form-control input-default" name="email" placeholder="EMAIL">
+                                                        </div>
                                                     <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="ref_no" placeholder="REFERENCE NUMBER">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="name" placeholder="FULL NAME">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control input-default" name="amount" placeholder="AMOUNT">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <select class="form-control" name="bank">
-                                                            <option value="Bank">BANK</option>
-                                                            <option value="Cheque">CHEQUE</option>
+                                                        <select class="form-control" name="role">
+                                                            <option value="1">Admin</option>
+                                                            <option value="0">Super Admin</option>
                                                         </select>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <select class="form-control" name="bank">
-                                                            <option value="EQUITY BANK">SELECT </option>
-                                                            <option value="KCB BANK">KCB BANK</option>
-                                                            <option value="FAMILY BANK">FAMILY BANK</option>
-                                                            <option value="BACLAYS BANK">BACLAYS BANK</option>
-                                                            <option value="CORPARATIVE BANK">CORPARATIVE BANK</option>
-                                                        </select>
+                                                    <div class="col-6 col-sm-4">
+                                                        <div class="custom-control custom-checkbox mb-3">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheckBox1" name="customCheckBox1" value="dash" checked>
+                                                            <label class="custom-control-label" for="customCheckBox1">Dashboard</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 col-sm-4">
+                                                        <div class="custom-control custom-checkbox mb-3">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheckBox2" name="customCheckBox2" value="property" checked>
+                                                            <label class="custom-control-label" for="customCheckBox2">Properties</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 col-sm-4">
+                                                        <div class="custom-control custom-checkbox mb-3">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheckBox3" name="customCheckBox3" value="lease" checked>
+                                                            <label class="custom-control-label" for="customCheckBox3">Customer Lease</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 col-sm-4">
+                                                        <div class="custom-control custom-checkbox mb-3">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheckBox4" name="customCheckBox4" value="transaction" checked>
+                                                            <label class="custom-control-label" for="customCheckBox4">Transactions</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 col-sm-4">
+                                                        <div class="custom-control custom-checkbox mb-3">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheckBox6" name="customCheckBox6" value="role" checked>
+                                                            <label class="custom-control-label" for="customCheckBox6">User Roles</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 col-sm-4">
+                                                        <div class="custom-control custom-checkbox mb-3">
+                                                            <input type="checkbox" class="custom-control-input" id="customCheckBox7" name="customCheckBox7" value="terminated" checked>
+                                                            <label class="custom-control-label" for="customCheckBox7">Terminated Leases</label>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save</button>
-                                            </div>
                                         </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </div>
                                     </form>
                                 </div>
                             </div>
@@ -814,30 +838,29 @@
                         </div>
                         @include('flash-message')
                         <div class="card-body">
-
                             <div class="table-responsive">
                                 <table id="example" class="display min-w850">
                                     <thead>
                                     <tr>
-                                        <th>Ref No</th>
                                         <th>Name</th>
-                                        <th>Amount</th>
-                                        <th>Payment Method</th>
-                                        <th>Bank</th>
-                                        <th>Date</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
 
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($transactions as $transaction)
-                                        <tr>
-                                            <td>{{$transaction->ref}}</td>
-                                            <td>{{$transaction->name}}</td>
-                                            <td>{{$transaction->amount}}</td>
-                                            <td>{{$transaction->payment_method}}</td>
-                                            <td>{{$transaction->bank_type}}</td>
-                                            <td>{{$transaction->date}}</td>
-                                        </tr>
+                                    @foreach($users as $user)
+                                    <tr>
+                                        <td>{{$user->name}}</td>
+                                        <td>{{$user->email}}</td>
+                                        @if($user->role==1)
+                                            <td>ADMIN</td>
+                                        @else
+                                            <td>SUPER ADMIN</td>
+                                        @endif
+                                        <td><a href="{{url('editRole',$user->id)}}"><button class="btn btn-primary">Edit</button></a></td>
+                                    </tr>
                                     @endforeach
                                 </table>
                             </div>
@@ -857,20 +880,20 @@
             Footer start
         ***********************************-->
 
-    <!--**********************************
-            Main wrapper end
-        ***********************************-->
+<!--**********************************
+        Main wrapper end
+    ***********************************-->
 
-    <!--**********************************
-            Scripts
-        ***********************************-->
-    @include('footer')
+<!--**********************************
+        Scripts
+    ***********************************-->
+@include('footer')
 
 
-    <!--		<script src="https://makaanlelo.com/tf_products_007/omah/laravel/demo/js/custom.min.js" type="text/javascript"></script>
+<!--		<script src="https://makaanlelo.com/tf_products_007/omah/laravel/demo/js/custom.min.js" type="text/javascript"></script>
 			<script src="https://makaanlelo.com/tf_products_007/omah/laravel/demo/js/deznav-init.js" type="text/javascript"></script> -->
-    <!--
-         --></body>
+<!--
+ 	--></body>
 <script>
     $(document).on('click','.view',function () {
         $value = $(this).attr('id');
