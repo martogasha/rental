@@ -70,4 +70,29 @@ class AuthController extends Controller
         $user->save();
         return redirect(url('Dashboard'))->with('success','PROFILE UPDATED SUCCESS');
     }
+    public function delRole(Request $request){
+        if ($request->ajax()) {
+            $output = "";
+            $order = User::find($request->order);
+            $output .= '
+<input type="hidden" value="'.$order->id.'" name="id">
+                                 <div class="modal-header">
+                                            <h5 class="modal-title" style="color: red">ARE YOU SURE YOU WANT TO DELETE '.$order->name.'</h5>
+                                            <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                            </button>
+                                        </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Delete</button>
+                                            </div>
+                ';
+
+        }
+        return response($output);
+    }
+    public function dRole(Request $request){
+        $del = User::find($request->id);
+        $del->delete();
+        return redirect()->back()->with('success','USER DELETED SUCCESS');
+    }
 }

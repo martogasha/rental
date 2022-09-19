@@ -934,6 +934,16 @@
                                     </form>
                                 </div>
                             </div>
+                            <div class="modal fade" id="quoteHouse">
+                                <div class="modal-dialog" role="document">
+                                    <form action="{{url('sendQuote')}}" method="post">
+                                        @csrf
+                                        <div class="modal-content" id="basic2">
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                         @include('flash-message')
                         <div class="card-body">
@@ -966,6 +976,8 @@
 
                                                 @endif
                                                 <button class="btn btn-info view" id="{{$house->id}}">Edit</button>
+                                                <button class="btn btn-primary quote" id="{{$house->id}}" style="background-color: green">Quote</button>
+                                                <button class="btn btn-danger view" id="{{$house->id}}">Delete</button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -1011,6 +1023,24 @@
             success:function (data) {
                 $('#editModal').modal('show');
                 $('#basic1').html(data);
+            },
+            error:function (error) {
+                console.log(error)
+                alert('error')
+
+            }
+
+        });
+    });
+    $(document).on('click','.quote',function () {
+        $value = $(this).attr('id');
+        $.ajax({
+            type:"get",
+            url:"{{url('quoteHouse')}}",
+            data:{'order':$value},
+            success:function (data) {
+                $('#quoteHouse').modal('show');
+                $('#basic2').html(data);
             },
             error:function (error) {
                 console.log(error)

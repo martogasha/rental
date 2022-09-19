@@ -827,7 +827,7 @@
                             </div>
                             <div class="modal fade" id="editModal">
                                 <div class="modal-dialog" role="document">
-                                    <form action="{{url('eProperty')}}" method="post">
+                                    <form action="{{url('dRole')}}" method="post">
                                         @csrf
                                         <div class="modal-content" id="basic1">
                                         </div>
@@ -859,7 +859,10 @@
                                         @else
                                             <td>SUPER ADMIN</td>
                                         @endif
-                                        <td><a href="{{url('editRole',$user->id)}}"><button class="btn btn-primary">Edit</button></a></td>
+                                        <td><a href="{{url('editRole',$user->id)}}"><button class="btn btn-primary">Edit</button></a>
+                                            <button class="btn btn-danger view" id="{{$user->id}}">Delete</button>
+
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </table>
@@ -899,7 +902,7 @@
         $value = $(this).attr('id');
         $.ajax({
             type:"get",
-            url:"{{url('editProperty')}}",
+            url:"{{url('delRole')}}",
             data:{'order':$value},
             success:function (data) {
                 $('#editModal').modal('show');

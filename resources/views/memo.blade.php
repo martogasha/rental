@@ -1,11 +1,10 @@
-<title>{{$customer->lease->customer->name}} - Invoice</title>
 <div class="card-body">
     <div id="invoiceholder">
         <div id="invoice" class="effect2">
 
             <div id="invoice-top">
                 <div class="title">
-                    <h1>Invoice #<span class="invoiceVal invoice_num">0{{$paying->id}}</span></h1>
+                    <h1>MEMO #</h1>
                 </div><!--End Title-->
             </div><!--End InvoiceTop-->
 
@@ -13,38 +12,20 @@
 
             <div id="invoice-mid">
                 <div id="message">
-                    <h2>Hello {{$customer->lease->customer->name}},</h2>
+                    <h2>Hello {{$property->name}} Tenants,</h2>
                 </div>
                 <div class="clearfix">
-                    @if($pay->balance<='0')
-                        <div class="container" style="text-align: center;background-color:green">
-                            <h4 style="color: white">PAID</h4>
+                    <div class="col-left">
+                        <div class="clientlogo"><img src="{{asset('elinkLogo.png')}}" alt="Elink Logo" /></div>
+                        <div class="clientinfo">
+                            <h2 id="supplier">ELINK AGENCIES LTD</h2>
+                            <p><span id="address">Victory Business Center</span><br><span id="city">Kikuyu</span><br><span id="country">elinkagenciesco@gmail.com</span><br><span id="tax_num">0721213678</span><br></p>
                         </div>
-                    @else
-                        <div class="container" style="text-align: center;background-color:red">
-                            <h4 style="color: white">UNPAID</h4>
-                        </div>
-                    @endif
-                    @if($pay->balance>'0')
-                    <br>
-                        <div class="container">
-                            <h4>Balance: {{$pay->balance}}</h4>
-                        </div>
-                        @endif
-                        <div class="col-left">
-                            <div class="clientlogo"><img src="{{asset('elinkLogo.png')}}" alt="Elink Logo" /></div>
-                            <div class="clientinfo">
-                                <h2 id="supplier">ELINK AGENCIES LTD</h2>
-                                <p><span id="address">Victory Business Center</span><br><span id="city">Kikuyu</span><br><span id="country">elinkagenciesco@gmail.com</span><br><span id="tax_num">0721213678</span><br></p>
-                            </div>
-                        </div>
+                    </div>
                     <div class="col-right">
                         <table class="table">
                             <tbody>
-                            <tr>
-                                <td><span>Invoice Total</span><label id="invoice_total">Ksh {{$total}}</label></td>
-                            </tr>
-                            <tr><td colspan="2"><span>Date</span>:<label id="note">{{$customer->date}}</label></td></tr>
+                            <tr><td colspan="2"><span>Date</span>:<label id="note">{{$date}}</label></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -53,59 +34,26 @@
 
             <div id="invoice-bot">
 
-                <div id="table">
-                    <table class="table-main">
-                        <thead>
-                        <tr class="tabletitle">
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th style="text-align: right">Invoice Category</th>
-                            <th style="text-align: right">Tenant Name</th>
-                            <th>Amount</th>
-                            <th></th>
-                            <th>Total</th>
-                        </tr>
-                        </thead>
-                        @foreach($invoices as $invoice)
-                        <tr class="list-item">
-                            <td data-label="Description" class="tableitem">{{$invoice->date}}</td>
-                            <td data-label="Description" class="tableitem">{{$invoice->invoice->lease->house->number}}, {{$invoice->invoice->lease->house->name}}, {{$invoice->invoice->lease->house->property->name}}</td>
-                            <td data-label="Description" class="tableitem">{{$invoice->type}}</td>
-                            <td data-label="Description" class="tableitem">{{$invoice->invoice->lease->customer->name}}</td>
-                            <td data-label="Tax Amount" class="tableitem">Ksh {{$invoice->amount}}</td>
-                            <td></td>
-                            <td data-label="AWT" class="tableitem">Ksh {{$invoice->amount}}</td>
-                        </tr>
-                        @endforeach
-                        <tr class="list-item total-row" style="font-size: 20px">
-                            <th colspan="4" class="tableitem">Grand Total</th>
-                            <td data-label="Grand Total" class="tableitem">Ksh {{$total}}</td>
-                        </tr>
-                    </table>
-                    <br>
-                    <table class="table-main">
-                        <thead>
-                        <tr class="tabletitle">
-                            <th>Transaction Date</th>
-                            <th style="text-align: right">Ref No</th>
-                            <th>Name</th>
-                            <th>Amount</th>
-                            <th>Payment Method</th>
-                            <th>Bank Details</th>
-                        </tr>
-                        </thead>
-                        @foreach($payments as $payment)
-                                <tr class="list-item">
-                                    <td data-label="Description" class="tableitem">{{$payment->transaction->date}}</td>
-                                    <td data-label="Unit Price" class="tableitem">{{$payment->transaction->ref}}</td>
-                                    <td data-label="Taxable Amount" class="tableitem">{{$payment->transaction->name}}</td>
-                                    <td data-label="Tax Code" class="tableitem">{{$payment->transaction->amount}}</td>
-                                    <td data-label="Tax Amount" class="tableitem">{{$payment->transaction->payment_method}}</td>
-                                    <td data-label="Tax Amount" class="tableitem">{{$payment->transaction->bank_type}}</td>
-                                </tr>
-                        @endforeach
-                    </table>
-                </div><!--End Table-->
+{{--                <div id="table">--}}
+{{--                    <table class="table-main">--}}
+{{--                        <thead>--}}
+{{--                        <tr class="tabletitle">--}}
+{{--                            <th>Description</th>--}}
+{{--                            <th></th>--}}
+{{--                            <th>Tenant</th>--}}
+{{--                        </tr>--}}
+{{--                        </thead>--}}
+{{--                        <tr class="list-item">--}}
+{{--                            <td data-label="Description" class="tableitem">A01, bedsitter</td>--}}
+{{--                            <td></td>--}}
+{{--                            <td data-label="Description" class="tableitem">Maxmillan Kibe</td>--}}
+{{--                        </tr>--}}
+{{--                    </table>--}}
+
+{{--                </div><!--End Table-->--}}
+                <br>
+                <p style="color: black;font-size: 20px">{{$desc}}</p>
+
 
             </div><!--End InvoiceBot-->
             <footer>

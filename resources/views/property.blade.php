@@ -793,6 +793,16 @@
                                     </form>
                                 </div>
                             </div>
+                            <div class="modal fade" id="memoModal">
+                                <div class="modal-dialog" role="document">
+                                    <form action="{{url('memo')}}" method="post">
+                                        @csrf
+                                        <div class="modal-content" id="basic2">
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                         @include('flash-message')
                         <div class="card-body">
@@ -815,7 +825,11 @@
                                         <td>{{$prop->location}}</td>
                                         <td>{{\App\Models\House::where('property_id',$prop->id)->where('status','VACANT')->count()}}</td>
                                         <td>{{\App\Models\House::where('property_id',$prop->id)->where('status','OCCUPIED')->count()}}</td>
-                                        <td><a href="{{url('houses',$prop->id)}}"><button class="btn btn-primary">Houses</button></a> <button class="btn btn-info view" id="{{$prop->id}}">Edit</button></td>
+                                        <td><a href="{{url('houses',$prop->id)}}"><button class="btn btn-primary">Houses</button></a>
+                                            <button class="btn btn-info view" id="{{$prop->id}}">Edit</button>
+                                            <button class="btn btn-info memo" id="{{$prop->id}}" style="background-color:green">Memo</button>
+                                            <button class="btn btn-danger del" id="{{$prop->id}}">Delete</button>
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </table>
@@ -827,9 +841,21 @@
         </div>
 
     </div>
-    <!--**********************************
-            Content body end
-        ***********************************-->
+                <div class="modal fade" id="delModal">
+                    <div class="modal-dialog" role="document">
+                        <form action="{{url('dProperty')}}" method="post">
+                            @csrf
+                            <div class="modal-content" id="basicDel">
+
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!--**********************************
+                        Content body end
+                    ***********************************-->
 
 
     <!--**********************************
@@ -860,6 +886,42 @@
             success:function (data) {
                 $('#editModal').modal('show');
                 $('#basic1').html(data);
+            },
+            error:function (error) {
+                console.log(error)
+                alert('error')
+
+            }
+
+        });
+    });
+    $(document).on('click','.memo',function () {
+        $value = $(this).attr('id');
+        $.ajax({
+            type:"get",
+            url:"{{url('getMemo')}}",
+            data:{'order':$value},
+            success:function (data) {
+                $('#memoModal').modal('show');
+                $('#basic2').html(data);
+            },
+            error:function (error) {
+                console.log(error)
+                alert('error')
+
+            }
+
+        });
+    });
+    $(document).on('click','.del',function () {
+        $value = $(this).attr('id');
+        $.ajax({
+            type:"get",
+            url:"{{url('delProperty')}}",
+            data:{'order':$value},
+            success:function (data) {
+                $('#delModal').modal('show');
+                $('#basicDel').html(data);
             },
             error:function (error) {
                 console.log(error)

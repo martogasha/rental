@@ -34,7 +34,10 @@ Route::get('terminate', [IndexController::class, 'terminate']);
 Route::get('terminated', [IndexController::class, 'terminated']);
 Route::get('lease', [IndexController::class, 'lease']);
 Route::get('editProperty', [IndexController::class, 'editProperty']);
+Route::get('delProperty', [IndexController::class, 'delProperty']);
 Route::get('editHouse', [IndexController::class, 'editHouse']);
+Route::get('quoteHouse', [IndexController::class, 'quoteHouse']);
+Route::get('getMemo', [IndexController::class, 'getMemo']);
 Route::get('viewHouses', [IndexController::class, 'viewHouses']);
 Route::get('role', [IndexController::class, 'role']);
 Route::get('addLease/{id}', [IndexController::class, 'addLease']);
@@ -47,8 +50,12 @@ Route::get('invoice/{id}', [MpesaController::class, 'invoice']);
 Route::get('invoicePaid/{id}', [MpesaController::class, 'invoicePaid']);
 Route::get('paidInvoice', [MpesaController::class, 'paidInvoice']);
 Route::get('sendMail', [MailController::class, 'sendMail']);
+Route::get('delRole', [AuthController::class, 'delRole']);
 
+Route::post('memo', [IndexController::class, 'memo']);
+Route::post('sendQuote', [IndexController::class, 'sendQuote']);
 Route::post('storeProperty', [IndexController::class, 'storeProperty']);
+Route::post('dProperty', [IndexController::class, 'dProperty']);
 Route::post('storeHouse', [IndexController::class, 'storeHouse']);
 Route::post('eProperty', [IndexController::class, 'eProperty']);
 Route::post('ehouse', [IndexController::class, 'ehouse']);
@@ -60,6 +67,7 @@ Route::post('addUser', [AuthController::class, 'addUser']);
 Route::post('log', [AuthController::class, 'log']);
 Route::post('eUser', [AuthController::class, 'eUser']);
 Route::post('prof', [AuthController::class, 'prof']);
+Route::post('dRole', [AuthController::class, 'dRole']);
 
 
 Auth::routes();

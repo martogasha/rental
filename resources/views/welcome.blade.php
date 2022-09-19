@@ -754,7 +754,7 @@
                                     <div class="card-body">
                                         <div class="media align-items-center">
                                             <div class="media-body mr-3">
-                                                <h2 class="fs-36 text-black font-w600">{{\App\Models\Property::count()}}</h2>
+                                                <h2 class="fs-36 text-black font-w600">{{\App\Models\Property::where('status','0')->count()}}</h2>
                                                 <p class="fs-18 mb-0 text-black font-w500">TOTAL PROPERTIES</p>
                                                 <span class="fs-13"></span>
                                             </div>
@@ -769,7 +769,7 @@
                                 <div class="card-body">
                                     <div class="media align-items-center">
                                         <div class="media-body mr-3">
-                                            <h2 class="fs-36 text-black font-w600">{{\App\Models\House::count()}}</h2>
+                                            <h2 class="fs-36 text-black font-w600">{{\App\Models\House::where('status','!=','TERMINATED')->count()}}</h2>
                                             <p class="fs-18 mb-0 text-black font-w500">TOTAL HOUSES</p>
                                             <span class="fs-13"></span>
                                         </div>
@@ -783,7 +783,7 @@
                                     <div class="card-body">
                                         <div class="media align-items-center">
                                             <div class="media-body mr-3">
-                                                <h2 class="fs-36 text-black font-w600">{{\App\Models\Customer::count()}}</h2>
+                                                <h2 class="fs-36 text-black font-w600">{{\App\Models\Lease::where('status','0')->count()}}</h2>
                                                 <p class="fs-18 mb-0 text-black font-w500">TOTAL CUSTOMERS</p>
                                                 <span class="fs-13"></span>
                                             </div>

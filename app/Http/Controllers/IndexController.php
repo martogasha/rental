@@ -31,7 +31,7 @@ class IndexController extends Controller
         return view('profile');
     }
     public function property(){
-        $props = Property::latest('id')->get();
+        $props = Property::where('status','0')->get();
         return view('property',[
             'props'=>$props
         ]);
@@ -67,6 +67,27 @@ class IndexController extends Controller
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+                ';
+
+        }
+        return response($output);
+
+    }
+    public function delProperty( Request $request){
+        if ($request->ajax()) {
+            $output = "";
+            $order = Property::find($request->order);
+                $output .= '
+<input type="hidden" value="'.$order->id.'" name="id">
+  <div class="modal-header">
+                                            <h5 class="modal-title" style="color: red">ARE YOU SURE YO WANT TO DELETE<br> '.$order->name.'</h5>
+                                            <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                            </button>
+                                        </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Delete</button>
                                             </div>
                 ';
 
@@ -112,6 +133,106 @@ class IndexController extends Controller
         }
         return response($output);
 
+    }
+    public function quoteHouse( Request $request){
+        if ($request->ajax()) {
+            $output = "";
+            $order = House::find($request->order);
+                $output .= '
+<input type="hidden" value="'.$order->id.'" name="id">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Quote '.$order->name.'</h5>
+                                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="basic-form">
+
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control input-default" value="'.$order->name.'">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control input-default" value="'.$order->number.'">
+                                                    </div>
+
+                                                     <div class="form-group">
+                                                        <input type="text" class="form-control input-default" value="'.$order->amount.'" name="amount" placeholder="HOUSE STATUS">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control input-default" name="desc" placeholder="CUSTOM MESSAGE">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control input-default" name="name" placeholder="Name">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control input-default" name="email" placeholder="ENTER EMAIL ADDRESS">
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+                ';
+
+        }
+        return response($output);
+
+    }
+    public function getMemo( Request $request){
+        if ($request->ajax()) {
+            $output = "";
+            $order = Property::find($request->order);
+                $output .= '
+<input type="hidden" value="'.$order->id.'" name="id">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">MEMO FOR '.$order->name.'</h5>
+                                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="basic-form">
+
+
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control input-default" name="desc" placeholder="CUSTOM MESSAGE">
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+                ';
+
+        }
+        return response($output);
+
+    }
+    public function sendQuote(Request $request){
+        $house = House::find($request->id);
+        $amount = $request->amount;
+        $date = Carbon::now()->format('d/m/Y');
+        $desc = $request->desc;
+        $name = $request->name;
+        Mail::to($request->email)->send(new \App\Mail\Quote($house,$amount,$date,$desc,$name));
+        return redirect()->back()->with('success','QUOTATION SENT SUCCESSFULLY');
+    }
+    public function memo(Request $request){
+
+        $houses = House::where('property_id',$request->id)->get();
+        foreach ($houses as $house){
+            $property = Property::find($request->id);
+            $desc = $request->desc;
+            $date = Carbon::now()->format('d/m/Y');
+            Mail::to($house->lease->customer->email)->send(new \App\Mail\Memo($property,$date,$desc));
+
+        }
+
+        return redirect()->back()->with('success','MEMO SENT SUCCESSFULLY');
     }
     public function viewHouses( Request $request){
         if ($request->ajax()) {
@@ -213,6 +334,8 @@ class IndexController extends Controller
                 'invoice_id'=>$invoice->id,
                 'date'=>Carbon::now()->format('d/m/Y'),
             ]);
+            $updateHouse = House::where('id',$request->house_id)->update(['status'=>('OCCUPIED')]);
+            $updateLeaseId = House::where('id',$request->house_id)->update(['lease_id'=>$lease->id]);
             $customer = \App\Models\Invoice::find($invoice->id);
             $pay = Lease::where('id',$invoice->lease_id)->first();
             $total = Type::where('invoice_id',$invoice->id)->sum('amount');
@@ -220,8 +343,7 @@ class IndexController extends Controller
             $payments = Payment::where('invoice_id',$invoice->id)->get();
             $paying = \App\Models\Invoice::find($invoice->id);
             Mail::to($customer->lease->customer->email)->send(new Invoice($customer,$pay,$total,$invoices,$payments,$paying));
-            $updateHouse = House::where('id',$request->house_id)->update(['status'=>('OCCUPIED')]);
-            $updateLeaseId = House::where('id',$request->house_id)->update(['lease_id'=>$lease->id]);
+
 
             return redirect(url('lease'))->with('success','LEASE CREATED SUCCESS');
         }
@@ -582,5 +704,16 @@ class IndexController extends Controller
         return view('role',[
             'users'=>$users
         ]);
+    }
+    public function dProperty(Request $request){
+        $deleteHouses = House::where('property_id',$request->id)->get();
+        foreach ($deleteHouses as $deleteHouse){
+            $updateLease = Lease::where('house_id',$deleteHouse->id)->update(['status'=>'1']);
+        }
+        $updateHouses = House::where('property_id',$request->id)->update(['status'=>'TERMINATED']);
+
+        $del = Property::where('id',$request->id)->update(['status'=>'1']);
+
+        return redirect()->back()->with('success','PROPERTY DELETED SUCCESS');
     }
 }
